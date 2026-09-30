@@ -17,7 +17,7 @@ Short-form = 1080x1920 vertical, 10–30s, talking-head face + motion-graphic sc
 ## The playbook (high-level)
 
 1. **Audio is source of truth.** Edit audio FIRST (cut retakes, pauses). Save as `<name>-edit.mp4`. Measure exact duration with `ffprobe` — this is the composition's `data-duration`.
-2. **Transcribe the edited audio** with the root `scripts/transcribe-elevenlabs.mjs` helper (ElevenLabs Scribe), a student-selected alternative normalized per `docs/TOOLS-AND-API-KEYS.md`, or if retiming an existing build with a `shift()` function in captions, keep the existing captions and just shift scene starts.
+2. **Transcribe the edited audio** with the root `scripts/transcribe-local.mjs` helper (local Whisper, default), `scripts/transcribe-elevenlabs.mjs` on request, a student-selected alternative normalized per `docs/TOOLS-AND-API-KEYS.md`, or if retiming an existing build with a `shift()` function in captions, keep the existing captions and just shift scene starts.
 3. **Author scene boundaries in edited-time** — NEVER mix original-time and edited-time anchors in the same file. See "Audio-sync protocol" below.
 4. **Build the composition scaffold** (4 layers: ambient-bg, seam-treatment, captions, face) — see "Composition scaffold" below.
 5. **Author scenes with LOCAL offsets** relative to each scene's `data-start`. Each scene is its own sub-composition under `compositions/scene<N>-<label>.html`.

@@ -6,6 +6,7 @@
   "description": "HyperFrames student kit for Codex and Claude Code: long-form edits, reels, storytelling, and motion graphics.",
   "scripts": {
     "transcribe": "node scripts/transcribe-elevenlabs.mjs",
+    "transcribe:local": "node scripts/transcribe-local.mjs",
     "validate-beats": "node scripts/validate-beat-sync.mjs",
     "preflight": "node scripts/preflight.mjs",
     "sync:skills": "node scripts/sync-codex-skills.mjs",
