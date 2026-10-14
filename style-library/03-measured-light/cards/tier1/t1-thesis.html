@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  MEASURED LIGHT · tier1 · thesis · FRASE QUE SE DESENROLLA
+  Cada palabra vive en un envoltorio con overflow:hidden y max-width animado de
+  0 a un techo mayor que cualquier palabra. El navegador recorta al ancho real,
+  así que la palabra se desenrolla y la línea —text-align:center— SE RECENTRA
+  SOLA en cada cuadro. Sin medir una letra y sin document.fonts.ready.
+  Es la solución al problema de construir en horizontal sin descentrar los pasos
+  intermedios. white-space:nowrap en la línea, o la última palabra provoca un
+  salto de renglón a mitad de la construcción.
+  Slots: kicker, headline.
+-->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+html,body{margin:0}
+#ml-t1-thesis{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;
+  background:var(--paper);color:var(--ink);font-family:var(--font-display)}
+#ml-t1-thesis .amb{position:absolute;inset:0;z-index:0}
+#ml-t1-thesis .aw{position:absolute;inset:-120%}
+#ml-t1-thesis .w1g{background:radial-gradient(ellipse 13% 16% at 46.8% 34.4%, var(--wash-1) 0%, rgba(29,29,232,.30) 30%, rgba(29,29,232,0) 100%)}
+#ml-t1-thesis .w2g{background:radial-gradient(ellipse 11% 14% at 54.1% 60.5%, var(--wash-2) 0%, rgba(70,90,255,.24) 32%, rgba(70,90,255,0) 100%)}
+#ml-t1-thesis .w3g{background:radial-gradient(ellipse 10% 12% at 42.4% 62.8%, var(--wash-3) 0%, rgba(255,255,255,.55) 36%, rgba(255,255,255,0) 100%)}
+#ml-t1-thesis .grain{position:absolute;left:-90%;top:-90%;width:280%;height:280%;z-index:9;
+  opacity:var(--grain-opacity);mix-blend-mode:multiply;pointer-events:none}
+#ml-t1-thesis .cam{position:absolute;inset:0;z-index:3}
+#ml-t1-thesis .kicker{position:absolute;left:0;top:50%;margin-top:-190px;width:100%;text-align:center;
+  opacity:0;font-size:var(--size-label);font-weight:600;letter-spacing:-.02em;color:var(--muted);z-index:6}
+#ml-t1-thesis .linea{position:absolute;left:0;top:50%;margin-top:-70px;width:100%;text-align:center;
+  font-size:var(--size-headline);font-weight:700;letter-spacing:-.045em;white-space:nowrap;z-index:5}
+#ml-t1-thesis .w{display:inline-block;overflow:hidden;max-width:0;vertical-align:top}
+#ml-t1-thesis .in{display:inline-block;white-space:nowrap;padding:0 .07em}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="ml-grain-th"><feTurbulence type="fractalNoise" baseFrequency="0.86" numOctaves="3" seed="21" stitchTiles="stitch"/></filter>
+</defs></svg>
+
+<div id="ml-t1-thesis" data-composition-id="ml-t1-thesis" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080" data-fps="60">
+  <div class="amb"><div class="aw w3g"></div><div class="aw w1g"></div><div class="aw w2g"></div></div>
+  <div class="cam">
+    <div class="kicker" data-slot="kicker">lo mismo, en un rato</div>
+    <div class="linea" data-slot="headline"><span class="w w0"><span class="in">Más</span></span><span class="w w1"><span class="in">rápido.</span></span><span class="w w2"><span class="in">Sin</span></span><span class="w w3"><span class="in">cambiar</span></span><span class="w w4"><span class="in">nada.</span></span></div>
+  </div>
+  <div class="grain"><svg width="100%" height="100%" preserveAspectRatio="none">
+    <rect width="100%" height="100%" filter="url(#ml-grain-th)"/></svg></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({paused:true});
+
+/* la cámara del campo claro va TODA en traslación: escalar empuja una línea
+   ancha fuera de los márgenes. 380 px / 6 s = 63 px/s. */
+tl.fromTo('#ml-t1-thesis .grain',{x:-700,y:-560},{x:700,y:560,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-thesis .w1g',{x:-560,y:340,scale:1.0},{x:560,y:-340,scale:1.46,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-thesis .w2g',{x:580,y:-360,scale:1.24},{x:-560,y:380,scale:.88,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-thesis .w3g',{x:280,y:240,scale:1.1},{x:-320,y:-260,scale:1.34,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-thesis .cam',{scale:1.0,y:190},{scale:1.02,y:-190,duration:6,ease:'none'},0);
+
+tl.fromTo('#ml-t1-thesis .kicker',{opacity:0,y:20},{opacity:1,y:0,duration:.42,ease:'power2.out'},0.26);
+tl.fromTo('#ml-t1-thesis .w0',{maxWidth:'0px'},{maxWidth:'900px',duration:.44,ease:'power2.out'},0.52);
+tl.fromTo('#ml-t1-thesis .w0 .in',{y:28,opacity:0},{y:0,opacity:1,duration:.40,ease:'power2.out',immediateRender:false},0.56);
+tl.fromTo('#ml-t1-thesis .w1',{maxWidth:'0px'},{maxWidth:'900px',duration:.44,ease:'power2.out'},0.86);
+tl.fromTo('#ml-t1-thesis .w1 .in',{y:28,opacity:0},{y:0,opacity:1,duration:.40,ease:'power2.out',immediateRender:false},0.90);
+tl.fromTo('#ml-t1-thesis .w2',{maxWidth:'0px'},{maxWidth:'900px',duration:.44,ease:'power2.out'},1.20);
+tl.fromTo('#ml-t1-thesis .w2 .in',{y:28,opacity:0},{y:0,opacity:1,duration:.40,ease:'power2.out',immediateRender:false},1.24);
+tl.fromTo('#ml-t1-thesis .w3',{maxWidth:'0px'},{maxWidth:'900px',duration:.44,ease:'power2.out'},1.54);
+tl.fromTo('#ml-t1-thesis .w3 .in',{y:28,opacity:0},{y:0,opacity:1,duration:.40,ease:'power2.out',immediateRender:false},1.58);
+tl.fromTo('#ml-t1-thesis .w4',{maxWidth:'0px'},{maxWidth:'900px',duration:.44,ease:'power2.out'},1.88);
+tl.fromTo('#ml-t1-thesis .w4 .in',{y:28,opacity:0},{y:0,opacity:1,duration:.40,ease:'power2.out',immediateRender:false},1.92);
+window.__timelines['ml-t1-thesis'] = tl;
+</script></body></html>

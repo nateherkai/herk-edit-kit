@@ -1,0 +1,134 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "measured-light",
+  "name": "Measured Light",
+  "number": "03",
+  "status": "draft",
+  "inspiration": "No sale de una referencia visual: sale de medir 40 piezas contra 22 referencias reales. Las reglas están en references/lecciones-medidas.md.",
+  "summary": "Registro claro, un objeto por cuadro, el color estrictamente en los objetos y nunca en la tipografía. Para producto, precio y promesa.",
+  "palette": {
+    "bg": "#F3F4F9",
+    "fg": "#0A0A14",
+    "accent": "#1D1DE8",
+    "notes": "Papel nunca blanco puro: un campo plano no da rango tonal y la medición se desploma. El acento no toca el texto."
+  },
+  "fonts": {
+    "display": "Instrument Sans",
+    "body": "Instrument Sans",
+    "mono": "IBM Plex Mono"
+  },
+  "motion": "Entradas power2.out de 0,5-0,7 s · golpes back.out(2.4) · salidas más rápidas que las entradas. Cámara calculada: recorrido_px / duracion_s >= 60.",
+  "transitions": "Atravesar con zoom: la que sale se agranda y se desenfoca, la que entra llega chica y nítida, con 0,12 s de solape.",
+  "cards": [
+    {
+      "id": "measured-light.t1.stat",
+      "tier": "tier1",
+      "purpose": "stat",
+      "file": "cards/tier1/t1-stat.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text",
+          "maxChars": 28
+        },
+        {
+          "name": "stat",
+          "type": "text",
+          "maxChars": 9
+        },
+        {
+          "name": "label",
+          "type": "text",
+          "maxChars": 40
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/measured-light.t1.stat.mp4",
+        "poster": "preview/measured-light.t1.stat.png"
+      }
+    },
+    {
+      "id": "measured-light.t2.list",
+      "tier": "tier2",
+      "purpose": "list",
+      "file": "cards/tier2/t2-list.html",
+      "slots": [
+        {
+          "name": "headline",
+          "type": "text",
+          "maxChars": 26
+        },
+        {
+          "name": "items",
+          "type": "list",
+          "maxItems": 4,
+          "maxChars": 30
+        }
+      ],
+      "duration": {
+        "min": 7,
+        "max": 14
+      },
+      "preview": {
+        "mp4": "preview/measured-light.t2.list.mp4",
+        "poster": "preview/measured-light.t2.list.png"
+      }
+    },
+    {
+      "id": "measured-light.t1.thesis",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "file": "cards/tier1/t1-thesis.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text",
+          "maxChars": 28
+        },
+        {
+          "name": "headline",
+          "type": "text",
+          "maxChars": 34
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/measured-light.t1.thesis.mp4",
+        "poster": "preview/measured-light.t1.thesis.png"
+      }
+    },
+    {
+      "id": "measured-light.t2.label",
+      "tier": "tier2",
+      "purpose": "label",
+      "file": "cards/tier2/t2-label.html",
+      "slots": [
+        {
+          "name": "label",
+          "type": "text",
+          "maxChars": 24
+        },
+        {
+          "name": "sublabel",
+          "type": "text",
+          "maxChars": 36
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 9
+      },
+      "preview": {
+        "mp4": "preview/measured-light.t2.label.mp4",
+        "poster": "preview/measured-light.t2.label.png"
+      }
+    }
+  ]
+}

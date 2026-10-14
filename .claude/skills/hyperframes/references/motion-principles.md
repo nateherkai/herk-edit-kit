@@ -2,11 +2,18 @@
 
 ## Guardrails
 
+> Ver también [lecciones-medidas.md](lecciones-medidas.md): escala real de un
+> travelling, umbral de percepción de la cámara, variación de ritmo 3×, tiempo de
+> lectura y equivalencias de curva (cubic out = `power2.out`, no `power3`).
+
 You know these rules but you violate them. Stop.
 
 - **Don't use the same ease on every tween.** You default to `power2.out` on everything. Vary eases like you vary font weights — no more than 2 independent tweens with the same ease in a scene.
 - **Don't use the same speed on everything.** You default to 0.4-0.5s for everything. The slowest scene should be 3× slower than the fastest. Vary duration deliberately.
-- **Don't enter everything from the same direction.** You default to `y: 30, opacity: 0` on every element. Vary: from left, from right, from scale, opacity-only, letter-spacing.
+- **Don't enter everything from the same direction.** You default to `y: 30, opacity: 0` on every element. Vary: from left, from right, from scale, opacity-only.
+  🚨 **No animar `letterSpacing`:** reflowea el texto y se clava a píxeles enteros,
+  así que tiembla bajo la captura por seek — el lint lo rechaza. Para el efecto de
+  letras que se juntan, partir en spans y animar la `x` de cada glifo.
 - **Don't use the same stagger on every scene.** Each scene needs its own rhythm.
 - **Don't use ambient zoom on every scene.** Pick different ambient motion per scene: slow pan, subtle rotation, scale push, color shift, or nothing. Stillness after motion is powerful.
 - **Don't start at t=0.** Offset the first animation 0.1-0.3s. Zero-delay feels like a jump cut.

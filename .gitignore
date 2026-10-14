@@ -42,3 +42,7 @@ Thumbs.db
 !examples/showcase/curiosity-reel-2.mp4
 !examples/showcase/curiosity-reel-1.mp4
 !examples/showcase/ais-live-ad.mp4
+
+# entorno del TTS local (kokoro-onnx): 160 MB, se recrea con
+# python3.12 -m venv .venv-tts && .venv-tts/bin/pip install kokoro-onnx soundfile
+.venv-tts/

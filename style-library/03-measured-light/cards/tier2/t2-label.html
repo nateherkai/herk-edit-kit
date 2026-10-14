@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  MEASURED LIGHT · tier2 · label · RÓTULO CON FILO DE LUZ
+  El contorno iluminado son DOS elementos: el filo lleva la máscara doble con
+  mask-composite:exclude —que deja sólo el anillo del padding— y queda QUIETO;
+  adentro gira un hijo cuadrado más grande que la caja con el gradiente cónico.
+  Girar el elemento entero rotaría también su máscara y el filo se despegaría
+  del borde: en un rectángulo redondeado se gira el contenido, nunca el recorte.
+  tier2: fondo transparente — el orador sigue visible.
+  Slots: label, sublabel.
+-->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+html,body{margin:0}
+#ml-t2-label{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;
+  color:var(--ink);font-family:var(--font-display)}
+#ml-t2-label .caja{position:absolute;left:var(--margin-side);bottom:132px;
+  min-width:620px;height:168px;border-radius:52px;opacity:0;
+  display:flex;flex-direction:column;justify-content:center;padding:0 58px;
+  background:rgba(255,255,255,.93);
+  box-shadow:0 26px 64px rgba(20,20,140,.22)}
+#ml-t2-label .pista{position:absolute;inset:0;border-radius:52px;
+  border:3px solid rgba(29,29,232,.20)}
+#ml-t2-label .filo{position:absolute;inset:0;border-radius:52px;padding:3px;overflow:hidden;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite:exclude}
+#ml-t2-label .giro{position:absolute;left:50%;top:50%;width:1200px;height:1200px;margin:-600px 0 0 -600px;
+  background:conic-gradient(from 0deg,
+    rgba(29,29,232,0) 0deg, rgba(29,29,232,.5) 22deg,
+    rgba(120,140,255,1) 44deg, rgba(226,232,255,1) 56deg,
+    rgba(120,140,255,1) 68deg, rgba(29,29,232,.5) 96deg,
+    rgba(29,29,232,0) 130deg, rgba(29,29,232,0) 360deg)}
+#ml-t2-label .lb{position:relative;font-size:58px;font-weight:700;letter-spacing:-.03em;white-space:nowrap}
+#ml-t2-label .sb{position:relative;font-size:32px;font-weight:600;letter-spacing:-.01em;
+  color:var(--muted);margin-top:6px;white-space:nowrap}
+</style></head><body>
+
+<div id="ml-t2-label" data-composition-id="ml-t2-label" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080" data-fps="60">
+  <div class="caja">
+    <div class="pista"></div>
+    <div class="filo"><div class="giro"></div></div>
+    <span class="lb" data-slot="label">Entrega en el día</span>
+    <span class="sb" data-slot="sublabel">Córdoba capital, antes de las 15</span>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({paused:true});
+
+tl.fromTo('#ml-t2-label .caja',{opacity:0,x:-60,filter:'blur(18px)'},
+  {opacity:1,x:0,filter:'blur(0px)',duration:.58,ease:'power2.out'},0.18);
+/* el filo recorre el borde: la máscara quieta, el gradiente girando adentro */
+tl.fromTo('#ml-t2-label .giro',{rotation:-30},{rotation:690,duration:5.6,ease:'power1.inOut'},0.24);
+
+window.__timelines['ml-t2-label'] = tl;
+</script></body></html>

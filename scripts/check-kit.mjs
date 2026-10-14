@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 let errors = 0;
 const fail = message => { console.error(message); errors++; };
-const ignore = new Set(['node_modules', '.git', 'video-projects', 'raw-media', 'tmp', 'archives', 'renders']);
+const ignore = new Set(['node_modules', '.git', 'video-projects', 'raw-media', 'tmp', 'archives', 'renders', '.venv', '.venv-tts', 'venv', '__pycache__']);
 function walk(dir) { return readdirSync(dir, { withFileTypes: true }).flatMap(e => ignore.has(e.name) || e.name === '.env' ? [] : e.isDirectory() ? walk(join(dir,e.name)) : [join(dir,e.name)]); }
 const files = walk(root);
 // Explicitly approved public exports; other media remains excluded.

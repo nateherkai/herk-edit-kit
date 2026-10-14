@@ -1,0 +1,126 @@
+<!doctype html>
+<!--
+  MEASURED LIGHT · tier1 · stat · CIFRA CON VOLUMEN
+  La cifra tiene la cara NEGRA (texto negro sobre claro, la regla se cumple) y
+  el color de marca vive en las 26 capas de costado: el volumen es el objeto.
+  Sin 3D — son copias corridas 2 px cada una, y animar el corrimiento hace que
+  el volumen CREZCA desde el plano.
+  ⚠ La extrusión corre el bloque 52 px: se compensa la mitad para centrar a la
+  vista. El centro óptico no es el geométrico.
+  Slots: kicker, stat, label.
+-->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+html,body{margin:0}
+#ml-t1-stat{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;
+  background:var(--paper);color:var(--ink);font-family:var(--font-display)}
+#ml-t1-stat .amb{position:absolute;inset:0;z-index:0}
+#ml-t1-stat .aw{position:absolute;inset:-120%}
+/* centros en coordenadas de PANTALLA: el `at X% Y%` es relativo a la caja */
+#ml-t1-stat .w1{background:radial-gradient(ellipse 13% 16% at 46.8% 38.4%, var(--wash-1) 0%, rgba(29,29,232,.30) 30%, rgba(29,29,232,0) 100%)}
+#ml-t1-stat .w2{background:radial-gradient(ellipse 11% 14% at 54.1% 54.5%, var(--wash-2) 0%, rgba(70,90,255,.24) 32%, rgba(70,90,255,0) 100%)}
+#ml-t1-stat .w3{background:radial-gradient(ellipse 10% 12% at 42.4% 56.8%, var(--wash-3) 0%, rgba(255,255,255,.55) 36%, rgba(255,255,255,0) 100%)}
+#ml-t1-stat .grain{position:absolute;left:-90%;top:-90%;width:280%;height:280%;z-index:9;
+  opacity:var(--grain-opacity);mix-blend-mode:multiply;pointer-events:none}
+#ml-t1-stat .cam{position:absolute;inset:0;z-index:3}
+#ml-t1-stat .kicker{position:absolute;left:0;top:50%;margin-top:-256px;width:100%;text-align:center;
+  opacity:0;font-size:var(--size-body);font-weight:600;letter-spacing:-.02em;z-index:6}
+#ml-t1-stat .cifra{position:absolute;left:-26px;top:50%;margin-top:-140px;width:100%;text-align:center;
+  font-size:var(--size-display);font-weight:700;letter-spacing:-.055em;line-height:1;z-index:5}
+#ml-t1-stat .cap{position:absolute;left:0;width:100%;text-align:center}
+#ml-t1-stat .frente{color:var(--ink)}
+#ml-t1-stat .label{position:absolute;left:0;top:50%;margin-top:180px;width:100%;text-align:center;
+  opacity:0;font-size:var(--size-label);font-weight:600;letter-spacing:-.02em;color:var(--muted);z-index:6}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="ml-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="11" stitchTiles="stitch"/></filter>
+</defs></svg>
+
+<div id="ml-t1-stat" data-composition-id="ml-t1-stat" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080" data-fps="60">
+  <div class="amb"><div class="aw w3"></div><div class="aw w1"></div><div class="aw w2"></div></div>
+  <div class="cam">
+    <div class="kicker" data-slot="kicker">envío sin cargo desde</div>
+    <div class="cifra">
+        <span class="cap p25" style="color:#18188C" data-slot="stat">$200.000</span>
+        <span class="cap p24" style="color:#19198F" data-slot="stat">$200.000</span>
+        <span class="cap p23" style="color:#1A1A93" data-slot="stat">$200.000</span>
+        <span class="cap p22" style="color:#1C1C97" data-slot="stat">$200.000</span>
+        <span class="cap p21" style="color:#1D1D9B" data-slot="stat">$200.000</span>
+        <span class="cap p20" style="color:#1E1E9F" data-slot="stat">$200.000</span>
+        <span class="cap p19" style="color:#2020A3" data-slot="stat">$200.000</span>
+        <span class="cap p18" style="color:#2121A6" data-slot="stat">$200.000</span>
+        <span class="cap p17" style="color:#2222AA" data-slot="stat">$200.000</span>
+        <span class="cap p16" style="color:#2424AE" data-slot="stat">$200.000</span>
+        <span class="cap p15" style="color:#2525B2" data-slot="stat">$200.000</span>
+        <span class="cap p14" style="color:#2626B6" data-slot="stat">$200.000</span>
+        <span class="cap p13" style="color:#2828BA" data-slot="stat">$200.000</span>
+        <span class="cap p12" style="color:#2929BD" data-slot="stat">$200.000</span>
+        <span class="cap p11" style="color:#2B2BC1" data-slot="stat">$200.000</span>
+        <span class="cap p10" style="color:#2C2CC5" data-slot="stat">$200.000</span>
+        <span class="cap p9" style="color:#2D2DC9" data-slot="stat">$200.000</span>
+        <span class="cap p8" style="color:#2F2FCD" data-slot="stat">$200.000</span>
+        <span class="cap p7" style="color:#3030D1" data-slot="stat">$200.000</span>
+        <span class="cap p6" style="color:#3131D4" data-slot="stat">$200.000</span>
+        <span class="cap p5" style="color:#3333D8" data-slot="stat">$200.000</span>
+        <span class="cap p4" style="color:#3434DC" data-slot="stat">$200.000</span>
+        <span class="cap p3" style="color:#3535E0" data-slot="stat">$200.000</span>
+        <span class="cap p2" style="color:#3737E4" data-slot="stat">$200.000</span>
+        <span class="cap p1" style="color:#3838E8" data-slot="stat">$200.000</span>
+        <span class="cap p0" style="color:#3A3AEC" data-slot="stat">$200.000</span>
+      <span class="cap frente" data-slot="stat">$200.000</span>
+    </div>
+    <div class="label" data-slot="label">a todo el país</div>
+  </div>
+  <div class="grain"><svg width="100%" height="100%" preserveAspectRatio="none">
+    <rect width="100%" height="100%" filter="url(#ml-grain)"/></svg></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({paused:true});
+
+/* sostén calculado: grano 1400 px / 6 s = 233 px/s · manchas 186 px/s */
+tl.fromTo('#ml-t1-stat .grain',{x:-700,y:-560},{x:700,y:560,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-stat .w1',{x:-560,y:340,scale:1.0},{x:560,y:-340,scale:1.46,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-stat .w2',{x:580,y:-360,scale:1.24},{x:-560,y:380,scale:.88,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-stat .w3',{x:280,y:240,scale:1.1},{x:-320,y:-260,scale:1.34,duration:6,ease:'none'},0);
+tl.fromTo('#ml-t1-stat .cam',{scale:1.0,y:150},{scale:1.04,y:-150,duration:6,ease:'none'},0);
+
+tl.fromTo('#ml-t1-stat .kicker',{opacity:0,y:22},{opacity:1,y:0,duration:.44,ease:'power2.out'},0.48);
+tl.fromTo('#ml-t1-stat .cifra',{scale:.84,filter:'blur(22px)'},
+  {scale:1,filter:'blur(0px)',duration:.66,ease:'power2.out'},0.48);
+/* el volumen crece desde el plano */
+tl.fromTo('.p0',{x:0,y:0},{x:0.0,y:0.0,duration:.80,ease:'power3.out'},0.520);
+tl.fromTo('.p1',{x:0,y:0},{x:2.0,y:1.5,duration:.80,ease:'power3.out'},0.526);
+tl.fromTo('.p2',{x:0,y:0},{x:4.0,y:3.0,duration:.80,ease:'power3.out'},0.532);
+tl.fromTo('.p3',{x:0,y:0},{x:6.0,y:4.4,duration:.80,ease:'power3.out'},0.538);
+tl.fromTo('.p4',{x:0,y:0},{x:8.0,y:5.9,duration:.80,ease:'power3.out'},0.544);
+tl.fromTo('.p5',{x:0,y:0},{x:10.0,y:7.4,duration:.80,ease:'power3.out'},0.550);
+tl.fromTo('.p6',{x:0,y:0},{x:12.0,y:8.9,duration:.80,ease:'power3.out'},0.556);
+tl.fromTo('.p7',{x:0,y:0},{x:14.0,y:10.4,duration:.80,ease:'power3.out'},0.562);
+tl.fromTo('.p8',{x:0,y:0},{x:16.0,y:11.8,duration:.80,ease:'power3.out'},0.568);
+tl.fromTo('.p9',{x:0,y:0},{x:18.0,y:13.3,duration:.80,ease:'power3.out'},0.574);
+tl.fromTo('.p10',{x:0,y:0},{x:20.0,y:14.8,duration:.80,ease:'power3.out'},0.580);
+tl.fromTo('.p11',{x:0,y:0},{x:22.0,y:16.3,duration:.80,ease:'power3.out'},0.586);
+tl.fromTo('.p12',{x:0,y:0},{x:24.0,y:17.8,duration:.80,ease:'power3.out'},0.592);
+tl.fromTo('.p13',{x:0,y:0},{x:26.0,y:19.2,duration:.80,ease:'power3.out'},0.598);
+tl.fromTo('.p14',{x:0,y:0},{x:28.0,y:20.7,duration:.80,ease:'power3.out'},0.604);
+tl.fromTo('.p15',{x:0,y:0},{x:30.0,y:22.2,duration:.80,ease:'power3.out'},0.610);
+tl.fromTo('.p16',{x:0,y:0},{x:32.0,y:23.7,duration:.80,ease:'power3.out'},0.616);
+tl.fromTo('.p17',{x:0,y:0},{x:34.0,y:25.2,duration:.80,ease:'power3.out'},0.622);
+tl.fromTo('.p18',{x:0,y:0},{x:36.0,y:26.6,duration:.80,ease:'power3.out'},0.628);
+tl.fromTo('.p19',{x:0,y:0},{x:38.0,y:28.1,duration:.80,ease:'power3.out'},0.634);
+tl.fromTo('.p20',{x:0,y:0},{x:40.0,y:29.6,duration:.80,ease:'power3.out'},0.640);
+tl.fromTo('.p21',{x:0,y:0},{x:42.0,y:31.1,duration:.80,ease:'power3.out'},0.646);
+tl.fromTo('.p22',{x:0,y:0},{x:44.0,y:32.6,duration:.80,ease:'power3.out'},0.652);
+tl.fromTo('.p23',{x:0,y:0},{x:46.0,y:34.0,duration:.80,ease:'power3.out'},0.658);
+tl.fromTo('.p24',{x:0,y:0},{x:48.0,y:35.5,duration:.80,ease:'power3.out'},0.664);
+tl.fromTo('.p25',{x:0,y:0},{x:50.0,y:37.0,duration:.80,ease:'power3.out'},0.670);
+tl.fromTo('#ml-t1-stat .cifra',{rotation:-1.6},{rotation:1.6,duration:2.4,ease:'sine.inOut',immediateRender:false},1.50);
+tl.fromTo('#ml-t1-stat .label',{opacity:0,y:26},{opacity:1,y:0,duration:.50,ease:'power2.out',immediateRender:false},1.52);
+
+window.__timelines['ml-t1-stat'] = tl;
+</script></body></html>

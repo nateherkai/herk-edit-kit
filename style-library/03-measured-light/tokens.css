@@ -1,0 +1,43 @@
+/* MEASURED LIGHT — tokens.
+   Los valores no son de gusto: salen de medir. El razonamiento está en
+   .claude/skills/hyperframes/references/lecciones-medidas.md */
+
+:root {
+  /* paleta — registro claro. El texto va NEGRO sobre claro; el color vive
+     únicamente en los objetos, nunca en la tipografía. */
+  --paper:  #F3F4F9;
+  --ink:    #0A0A14;
+  --accent: #1D1DE8;
+  --accent-deep: #1414C4;
+  --muted:  rgba(10, 10, 20, 0.62);
+
+  /* el campo claro necesita RANGO TONAL o no hay nada que la cámara mueva:
+     manchas de alfa alto, fuera de la banda de lectura. */
+  --wash-1: rgba(29, 29, 232, 0.66);
+  --wash-2: rgba(70, 90, 255, 0.56);
+  --wash-3: rgba(255, 255, 255, 1);
+  --grain-opacity: 0.20;          /* multiply sobre claro; screen sobre oscuro */
+
+  /* tipografía */
+  --font-display: "Instrument Sans", system-ui, sans-serif;
+  --font-body:    "Instrument Sans", system-ui, sans-serif;
+
+  --size-display:  250px;   /* cifra de takeover */
+  --size-headline: 120px;
+  --size-body:      58px;
+  --size-label:     52px;
+
+  /* márgenes: 122 px por lado. ancho útil = ANCHO − 244 */
+  --margin-side: 122px;
+
+  /* motion — la firma del estilo: entradas decididas, salidas rápidas */
+  --ease-out:  power2.out;
+  --ease-in:   power2.in;
+  --ease-pop:  back.out(1.7);
+  --ease-land: back.out(2.4);
+
+  /* umbrales medidos (para calcular, no para copiar a ciegas) */
+  --sostener-px-s: 60;      /* superficie plana: recorrido/duración ≥ 60 px/s */
+  --obturador: 0.9;         /* σ = (px_s / fps) · obturador / 3  → 320° */
+  --lectura-cps: 17;        /* caracteres por segundo, contados con texto completo */
+}

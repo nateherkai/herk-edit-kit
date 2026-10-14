@@ -1,0 +1,70 @@
+<!doctype html>
+<!--
+  MEASURED LIGHT · tier2 · list · RELEVO QUE RECOMIENDA
+  Cada opción LLEGA encendida y se apaga cuando llega la siguiente; al final se
+  vuelve a encender UNA SOLA. La pieza no dice cuál conviene: lo muestra
+  dejándola prendida.
+  ⚠ Con dos encendidas el ojo no elige y la recomendación se disuelve.
+  Encendida = blanco sobre acento · apagada = negro sobre blanco. Las dos reglas
+  de color se cumplen solas, sin texto de color.
+  tier2: fondo transparente — el orador sigue visible detrás.
+  Slots: headline, items (hasta 4).
+-->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../tokens.css">
+<style>
+html,body{margin:0}
+#ml-t2-list{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;
+  color:var(--ink);font-family:var(--font-display)}
+#ml-t2-list .head{position:absolute;left:0;top:50%;margin-top:-330px;width:100%;text-align:center;
+  opacity:0;font-size:var(--size-headline);font-weight:700;letter-spacing:-.045em;z-index:6}
+#ml-t2-list .lista{position:absolute;left:50%;top:50%;width:760px;margin:-130px 0 0 -380px;z-index:5;
+  display:flex;flex-direction:column;gap:24px}
+#ml-t2-list .op{position:relative;height:132px;border-radius:34px;background:#FFFFFF;opacity:0;
+  display:flex;align-items:center;padding:0 46px;
+  box-shadow:0 20px 46px rgba(20,20,140,.14), inset 0 0 0 2px rgba(29,29,232,.14)}
+#ml-t2-list .hot{position:absolute;inset:0;border-radius:34px;
+  background:linear-gradient(104deg,var(--accent) 0%,var(--accent-deep) 100%);
+  box-shadow:0 22px 56px rgba(20,20,180,.38)}
+#ml-t2-list .tx{position:relative;font-size:54px;font-weight:700;letter-spacing:-.03em;
+  color:#FFFFFF;white-space:nowrap}
+#ml-t2-list .tx em{display:block;font-style:normal;font-size:32px;font-weight:600;opacity:.7;margin-top:6px}
+#ml-t2-list .tx b{font-weight:700}
+</style></head><body>
+
+<div id="ml-t2-list" data-composition-id="ml-t2-list" data-start="0" data-duration="8"
+     data-width="1920" data-height="1080" data-fps="60">
+  <div class="head" data-slot="headline">Cómo pagás.</div>
+  <div class="lista">
+        <div class="op o0"><span class="hot"></span><span class="tx" data-slot="items"><b>Transferencia</b><em>el mejor precio</em></span></div>
+        <div class="op o1"><span class="hot"></span><span class="tx" data-slot="items"><b>Tarjeta</b><em>en 3 cuotas</em></span></div>
+        <div class="op o2"><span class="hot"></span><span class="tx" data-slot="items"><b>Mercado Pago</b><em>como siempre</em></span></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({paused:true});
+
+tl.fromTo('#ml-t2-list .head',{opacity:0,y:40,filter:'blur(22px)'},
+  {opacity:1,y:0,filter:'blur(0px)',duration:.58,ease:'power2.out'},0.16);
+
+tl.fromTo('#ml-t2-list .o0',{opacity:0,y:40,scale:.9},{opacity:1,y:0,scale:1,duration:.44,ease:'back.out(1.7)'},0.60);
+tl.to('#ml-t2-list .o0 .hot',{opacity:0,duration:.42,ease:'power2.inOut'},1.12);
+tl.to('#ml-t2-list .o0 .tx',{color:'var(--ink)',duration:.42,ease:'power2.inOut'},1.12);
+tl.fromTo('#ml-t2-list .o1',{opacity:0,y:40,scale:.9},{opacity:1,y:0,scale:1,duration:.44,ease:'back.out(1.7)'},1.70);
+tl.to('#ml-t2-list .o1 .hot',{opacity:0,duration:.42,ease:'power2.inOut'},2.22);
+tl.to('#ml-t2-list .o1 .tx',{color:'var(--ink)',duration:.42,ease:'power2.inOut'},2.22);
+tl.fromTo('#ml-t2-list .o2',{opacity:0,y:40,scale:.9},{opacity:1,y:0,scale:1,duration:.44,ease:'back.out(1.7)'},2.80);
+tl.to('#ml-t2-list .o2 .hot',{opacity:0,duration:.42,ease:'power2.inOut'},3.32);
+tl.to('#ml-t2-list .o2 .tx',{color:'var(--ink)',duration:.42,ease:'power2.inOut'},3.32);
+
+/* la que conviene se queda encendida — UNA SOLA */
+tl.to('#ml-t2-list .o0 .hot',{opacity:1,duration:.44,ease:'power2.out'},4.30);
+tl.to('#ml-t2-list .o0 .tx',{color:'#FFFFFF',duration:.44,ease:'power2.out'},4.30);
+tl.to('#ml-t2-list .lista',{scale:1.04,duration:.13,ease:'power2.out'},4.30);
+tl.to('#ml-t2-list .lista',{scale:1,duration:.54,ease:'back.out(2.4)'},4.44);
+
+window.__timelines['ml-t2-list'] = tl;
+</script></body></html>

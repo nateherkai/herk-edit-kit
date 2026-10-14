@@ -2,6 +2,15 @@
 
 The compiler embeds supported fonts — just write `font-family` in CSS.
 
+> 🚨 **Antes de elegir: el motor sólo embebe 18 familias.** De las que esta lista
+> NO prohíbe, las embebidas son: **Montserrat · Oswald · League Gothic ·
+> Archivo Black · Space Mono · IBM Plex Mono · JetBrains Mono · Source Code Pro**.
+> Cualquier otra necesita un `@font-face` real con su `.woff2`, **pegado inline**
+> (un `@import` a un `.css` externo el compilador no lo ve).
+> `scripts/lab/getfont.mjs` baja cualquier Google Font y lo arma.
+> Y **ninguna medición de texto es válida antes de `document.fonts.ready`** —
+> ver [lecciones-medidas.md](lecciones-medidas.md) §4.
+
 ## Banned
 
 Training-data defaults that every LLM reaches for. These produce monoculture across compositions.
