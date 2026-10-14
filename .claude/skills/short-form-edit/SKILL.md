@@ -61,6 +61,14 @@ the next edit starts from it. Record the note and the resulting rule together.
    Render the clean cut once and derive word timing from the actual frame-aligned
    EDL. Lock the cut after the rough animatic, before polished graphics. Every later timing change rebuilds dependent
    captions, graphics, and sound from the same map.
+   When pulling phrases out of a long recording, use `scripts/cut-phrases.mjs`:
+   name each phrase's first and last words, transcribe short windows of the
+   source file itself for ground truth (never a retimed transcript), and let it
+   snap each cut to the local audio minimum. Cutting at ASR word times plus a
+   fixed pad lands on the next word's first syllable. Cut pieces with a keyframe
+   every second (`-g 30`) or the renderer warns about seek failures. The script
+   re-transcribes the assembly and diffs it against the intended text; do the
+   same on the final render.
 
 User authorization persists. An instruction to make a finished video and iterate
 authorizes ordinary local editing and rendering. An explicit request for Kie
@@ -285,7 +293,9 @@ human reactions where they support the story.
    sounds. Make meaningful contacts perceptible, vary texture and density, and
    retain quieter conviction beats. Do not substitute louder music or a whoosh
    on every cut. Inspect the actual animation landing before setting each cue.
-6. Run lint and inspect the live preview before rendering. Browser automation is
+6. Run lint and `hyperframes validate` before every render, and render with
+   `--strict` so a lint error (a missing font, logo, or GSAP file) blocks the
+   render instead of producing a silently broken video. Browser automation is
    headless with Pointer Lock and pointer capture disabled in every context.
    Local automated review is permitted when the user authorized autonomous
    iteration. Render a draft, inspect it, revise, then render final quality.

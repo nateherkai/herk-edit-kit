@@ -42,6 +42,13 @@ Use `raw.mistakes-transcript.json` alongside `clean.mp4`. Copy that transcript t
 the project's `assets/transcript.json` for beat validation. Never use raw timings
 against the cleaned video. Claude users can substitute `.claude` for `.agents`.
 
+With `--video`, each cut edge is snapped to the quietest point near the approved
+time so it never lands on the next word's first syllable (`--no-snap-audio` to
+disable). For cutdowns and short ads pulled out of a long recording, use
+`node scripts/cut-phrases.mjs <project>` with a `spec.json` of phrases and
+ground-truth windows; it cuts, assembles, and re-transcribes the result to diff
+it against the intended text.
+
 ## 4. Design the visual layer
 
 Read video-storytelling and the motion philosophy. Fill a beat sheet with the

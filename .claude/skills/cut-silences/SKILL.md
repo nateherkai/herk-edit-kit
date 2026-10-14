@@ -80,4 +80,30 @@ The JSON summary printed to stdout includes `removed`, `removedPct`, range count
 
 ## Hand-off to the next agent
 
-Pass `<stem>.silence-transcript.json` (and the `silenced.mp4` if rendered) to the **cut-mistakes** agent. Because timestamps are already on the edited timeline, downstream beat timing and `scripts/validate-beat-sync.mjs` work without further adjustment.
+Pass `<stem>.silence-transcript.json` (and the `silenced.mp4` if rendered) to the **cut-mistakes** agent.
+
+## Retimed-transcript precision
+
+`<stem>.silence-transcript.json` only lines up with `silenced.mp4` if every
+cut lands on a real frame. Two things have to hold, and originally neither
+did:
+
+1. Delete-range edges are snapped to the nearest source frame (via
+   `ffprobe`'s `r_frame_rate`, only when `--video` is given) before any
+   retiming math.
+2. The filtergraph writes those times at microsecond precision. At
+   millisecond precision a 30fps boundary (33.333…ms) rounds past the frame's
+   real timestamp, ffmpeg drops the boundary frame, video runs one frame
+   short of its sample-exact audio, and `concat` shifts every later segment
+   by a few ms — always in the same direction. Across a few hundred cuts that
+   compounded to 1–3s.
+
+Measured on one identical 45-cut clip: pre-fix drift 0.27s at the end of the
+file; snap-only (ms precision) 0.31s — no improvement; snap + µs precision
+0.01s, with the rendered duration matching the transcript's claim exactly.
+
+Still re-transcribe the final render and diff it against the intended text
+before calling any downstream cut done. Transcription timing itself has
+~10–100ms of jitter, variable-frame-rate sources are not handled, and a
+locked-off single-camera shot looks identical a second early in a frame
+strip — that check is the only thing that catches a uniform time offset.
