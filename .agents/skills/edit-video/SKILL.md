@@ -12,9 +12,9 @@ missing, propose a style from `style-library/registry.json` based on the footage
 1. Inspect duration, streams, and source resolution with ffprobe. Copy the source
    into the project's assets or reference an explicitly provided local path.
 2. Read `docs/TOOLS-AND-API-KEYS.md` before service setup. Reuse a matching word
-   transcript. Otherwise use the student's chosen provider; Nate defaults to
-   `node scripts/transcribe-elevenlabs.mjs <source>`. OpenAI Whisper and local
-   Whisper are supported workflow alternatives after transcript normalization.
+   transcript. Otherwise default to local Whisper:
+   `node scripts/transcribe-local.mjs <source>` (offline, already normalized).
+   Use `node scripts/transcribe-elevenlabs.mjs <source>` only on request.
    Check available credentials or local dependencies. Explain uploads and costs
    before any service call whose authorization is still missing.
 3. Read `../cut-silences/SKILL.md`. Produce an EDL and a retimed transcript, and
