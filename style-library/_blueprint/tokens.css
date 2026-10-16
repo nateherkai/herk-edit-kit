@@ -27,6 +27,7 @@
   --dur-out: 0.35s;
 
   /* spacing / shape */
+  --scrim: rgba(0, 0, 0, 0.55);   /* translucent backing for tier2 overlay cards */
   --radius: 16px;
   --pad: 48px;
 }

@@ -19,7 +19,8 @@
     "test:media": "node scripts/smoke-media.mjs",
     "validate:short-form": "node .claude/skills/short-form-edit/scripts/validate-plan.mjs",
     "validate:footage": "node .claude/skills/short-form-edit/scripts/validate-footage.mjs",
-    "preflight:all": "node scripts/preflight-all.mjs"
+    "preflight:all": "node scripts/preflight-all.mjs",
+    "check:cards": "node scripts/check-cards.mjs"
   },
   "engines": {
     "node": ">=22"
