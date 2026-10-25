@@ -1,0 +1,34 @@
+// Galeria de componentes não usados no demo (tempos fixos).
+const IMG = Array.from({ length: 18 }, (_, i) => `assets/img/v${String(i + 1).padStart(2, "0")}.jpg`);
+K.layout("split", 0.5);
+K.section({ kicker: "Pensa no que isso abre", title: "O que isso abre pra você", acc: [5] }, 0.7, { until: 4.6 });
+K.grid([{ img: IMG[0], label: "Criativos para testar", icon: "megaphone", badge: ["A", "B"], t: 1.0 }, { img: IMG[1], label: "Conteúdo com sua identidade", icon: "spark", t: 1.6 },
+        { img: IMG[2], label: "Aulas que explicam melhor", icon: "cap", t: 2.2 }, { img: IMG[3], label: "Vídeos para o YouTube", icon: "play", t: 2.8 }], { until: 4.6 });
+K.layout("pip", 5.0);
+K.section({ title: "uma base aprovada, muitas versões", acc: [2] }, 5.2, { until: 9.6 });
+const c = K.mk("#ui", "k gcard", `<div class="thumb" style="height:260px"><img src="${IMG[4]}"></div><div class="lbl"><span>Projeto base · v1</span></div>`, { left: "52px", top: "200px", width: "600px", height: "360px" });
+K.show(c, 5.5, 0.3); K.out(c, 9.6);
+K.stamp("APROVADO ✓", 6.4, { x: 420, y: 170, until: 9.6 });
+K.fan([IMG[5], IMG[6], IMG[7], IMG[8]], 7.4, { top: 640, until: 9.6 });
+K.layout("split", 9.8);
+K.dashbox("ESPAÇO", 10.3, { box: { x: 200, y: 230, w: 680, h: 600 } }).drop(IMG[9], 11.3).wipe(IMG[10], 12.3).out(14.4);
+K.pill("do papel para a tela", 12.9, { y: 870, sm: true, up: true, until: 14.4 });
+K.layout("card916", 14.6); K.kickerTop("9:16 vertical", 14.6, { until: 15.6 });
+K.layout("card11", 15.6); K.kickerTop("1:1 quadrado", 15.6, { until: 16.6 });
+K.layout("card169", 16.6); K.kickerTop("16:9 horizontal", 16.6, { until: 17.6 });
+K.layout("split", 17.6);
+K.category("Anúncios", 17.8, { kicker: "Uma base · vários destinos", i: 0, until: 18.8 });
+K.category("Aulas", 18.8, { kicker: "Uma base · vários destinos", i: 1, until: 19.8 });
+K.category("Tutoriais", 19.8, { kicker: "Uma base · vários destinos", i: 2, until: 21.0 });
+K.row3d([IMG[11], IMG[12], IMG[13], IMG[14]], 18.0, { top: 330, until: 20.8 });
+K.layout("full", 21.2);
+K.orbit([IMG[0], IMG[2], IMG[4], IMG[6], IMG[8], IMG[10], IMG[12]], 21.4, 25.8);
+K.pill("12 aulas · treinamento direto", 21.8, { y: 1520, kind: "dark", up: true, sm: true, until: 25.8 });
+K.layout("split", 26.0);
+K.price({ kicker: "Por apenas", cur: "R$", value: 97, tail: "à vista", sub: "ou 12x de R$ 9,70 no cartão" }, 26.3, { box: { x: 52, y: 180, w: 976, h: 300 }, until: 31 });
+K.ring("7", "DIAS", 28.0, { x: 900, y: 330, until: 31 });
+K.pill("Primeira turma", 26.2, { x: 52, y: 80, sm: true, up: true, until: 31 });
+K.scrub(26.5, 3.5, { y: 600, until: 31 });
+K.leak(31.0);
+K.layout("full", 31.1);
+K.cta("Quero criar meus vídeos com IA", 32, { y: 1500, until: 36 });

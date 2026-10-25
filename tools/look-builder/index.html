@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Look builder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:ital,wght@0,600;0,900;1,900&family=Bodoni+Moda:ital,wght@1,400&family=EB+Garamond:ital@0;1&family=Bebas+Neue&family=Fraunces:ital,wght@0,300;0,900;1,900&family=Archivo:wght@400;500;700&family=Playfair+Display:wght@700&family=Caveat:wght@700&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@800&family=Instrument+Serif:ital@1&family=Montserrat:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@500;700;800&family=Space+Mono&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <div class="brand"><b>Look builder</b><span class="h">your look.</span><span class="sub">Escolha o visual do seu vídeo vendo ele no seu próprio clipe.</span></div>
+    <div class="tabs"><button class="tab" id="switchPath" title="Trocar entre Usar um template e Montar do zero">Trocar caminho</button><a class="tab" id="toReview" href="/review" title="Assista o corte, deixe notas por tempo e acompanhe os edits">Revisar vídeo</a><details class="adv-menu" id="advMenu"><summary class="tab">Avançado ▾</summary><div class="adv-pop"><button class="tab on" data-view="look">Ver o look</button><button class="tab" data-view="json">Ver o JSON</button><button id="copyJson">⧉ Copiar o JSON</button><button id="copyPrompt">⧉ Copiar o pedido para o Claude</button><label class="chk"><input type="checkbox" id="advToggle"> Mostrar opções avançadas<small>códigos Brand Nat, escolha da skill e conflitos</small></label></div></details><button class="tab" id="theme" title="Claro / escuro">◐</button><button class="tab danger" id="reset" title="Limpar todas as escolhas">Limpar</button></div>
+  </div>
+  <nav class="steps" id="steps" aria-label="Passos"></nav>
+  <div class="progress"><i id="progressBar"></i></div>
+</header>
+
+<main class="main">
+  <aside class="preview" id="preview">
+    <button class="btn sm prev-toggle" id="previewToggle" title="Mostrar / esconder a prévia">Prévia ▾</button>
+    <div class="clip-row">
+      <select id="clipSelect"><option value="">Carregando clipes…</option></select>
+      <input id="clipPath" placeholder="ou cole o caminho de um .mp4/.mov" spellcheck="false">
+      <button id="clipLoad" class="btn sm" title="Abre o seletor de arquivo (ou o caminho colado ao lado)">Abrir…</button>
+    </div>
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+        <div class="empty" id="stageEmpty"><b>Sem clipe: avatar</b><span>Escolha um vídeo acima para ver o look no seu rosto.</span></div>
+        <div class="cam" id="cam"><video id="video" muted playsinline preload="auto"></video></div>
+        <div class="world lb-back" id="worldBack" aria-hidden="true"></div>
+        <div class="cam fg" id="camFg" aria-hidden="true"><canvas id="fgCanvas"></canvas></div>
+        <div class="world lb-front" id="world"></div>
+        <div class="guides" id="guides" aria-hidden="true"><i class="g safe"><span class="tag">zona segura</span></i><i class="g face"><span class="tag">rosto</span></i><i class="g head" data-k="headTop"><span class="tag" title="Arraste para ajustar"><b>↕</b>cabeça<em></em></span></i><i class="g cap" data-k="capTop"><span class="tag" title="Arraste para ajustar"><b>↕</b>legenda<em></em></span></i></div>
+      </div>
+    </div>
+    <div class="transport">
+      <button class="btn sm" id="back5">-5s</button>
+      <button class="btn sm primary" id="play">Play</button>
+      <button class="btn sm" id="fwd5">+5s</button>
+      <span class="time" id="time">0:00 / 0:00</span>
+      <label class="chk"><input type="checkbox" id="mute" checked> mudo</label>
+      <label class="chk"><input type="checkbox" id="showGuides" checked> guias</label>
+      <span class="matte-box" id="matteBox" hidden title="Recorta a pessoa ao vivo para os efeitos marcados passarem atrás dela. No Testar de verdade o recorte é o real (remove-background)."><label class="chk"><input type="checkbox" id="liveMatte" checked> recorte ao vivo</label><small id="matteState"></small></span>
+      <label class="chk" title="Mostra um apresentador neutro no lugar do seu clipe, como nas amostras dos pacotes"><input type="checkbox" id="useAvatar"> avatar</label>
+    </div>
+    <details class="texts adjust" open>
+    <summary>Enquadramento e detecção</summary>
+    <div class="sliders">
+      <label>Topo da cabeça <input type="range" id="headTop" min="200" max="1200" step="10"><output id="headTopV"></output></label>
+      <label>Legenda (topo) <input type="range" id="capTop" min="600" max="1700" step="10"><output id="capTopV"></output></label>
+      <div class="detect-row"><button class="btn sm" id="detectHead" title="Acha o rosto em alguns frames do clipe e posiciona os sliders (MediaPipe, roda no navegador)">Detectar cabeça</button><label class="chk"><input type="checkbox" id="autoDetect" checked> automático ao abrir um clipe</label></div>
+    </div>
+    </details>
+    <details class="texts">
+      <summary>Texto de exemplo</summary>
+      <label>Gancho, linha 1 <input id="hook1"></label>
+      <label>Gancho, linha 2 <input id="hook2"></label>
+      <label>Frase das legendas <input id="wordsIn"></label>
+      <label>Palavra-chave <input id="keyword"></label>
+      <label>Nota à mão <input id="note"></label>
+      <label>Comentário <input id="comment"></label>
+      <label>Seu @ <input id="user"></label>
+      <button class="btn sm" id="fromTranscript">Usar a transcrição do projeto</button>
+    </details>
+    <p class="hint" id="previewHint">Previewing: <span id="clipName">—</span></p>
+    <p class="hint">Atalhos: ← → passos · 1–9 escolhe o card · espaço play/pause · Esc fecha "mais como essa". O rascunho salva sozinho por clipe.</p>
+  </aside>
+
+  <section class="panel" id="panel">
+    <div class="step-head">
+      <div class="step-kicker" id="stepKicker">Passo 1 de 7</div>
+      <h2><span class="num" id="stepNum">1</span><span id="stepTitle">Cores</span></h2>
+      <p id="stepHelp"></p>
+      <div class="picks" id="picks"></div>
+      <div class="quick" id="quick"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="json-view" id="jsonView" hidden><pre id="jsonPre"></pre></div>
+  </section>
+</main>
+
+<footer class="bottom">
+  <div class="bottom-nav"><button class="btn" id="prev" title="Voltar"><span class="ic">←</span><span class="tx">Voltar</span></button><div class="tray-picks" id="trayPicks"></div><span class="extras" id="extras">0 extras</span><button class="btn primary" id="next"><span class="tx">Próximo</span><span class="ic">→</span></button></div>
+  <div class="save-row">
+    <label class="slug-wrap"><span>video-projects/</span><input id="slug" placeholder="meu-reel" spellcheck="false"></label>
+    <button class="btn test" id="testReal" title="Renderiza um trecho do seu clipe com o HyperFrames, igual vai ficar"><span class="ic">▶</span><span class="tx">Ver render de verdade</span></button>
+    <button class="btn primary" id="save" title="Grava o look no projeto e copia o pedido para o Claude"><span class="ic">✓</span><span class="tx">Salvar e usar no Claude</span></button>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<dialog id="testDlg" class="test-dlg">
+  <header><div><b>Render de verdade</b><span id="testSub">Um trecho do seu clipe renderizado pelo HyperFrames, do jeito que vai ficar.</span></div><button class="btn sm" id="testClose">Fechar</button></header>
+  <div class="test-body" id="testBody"></div>
+  <footer><span class="hint" id="testPath"></span><span class="hint">Trecho do clipe a partir do tempo atual do player. Projeto de teste em <code>video-projects/&lt;slug&gt;/look-test/</code>.</span></footer>
+</dialog>
+
+<script src="/vendor/gsap.min.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

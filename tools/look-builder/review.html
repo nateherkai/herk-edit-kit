@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edit Review — Look builder</title>
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/review.css">
+</head>
+<body class="review">
+<header class="top rv-top">
+  <div class="top-row">
+    <div class="brand"><b>Edit Review</b><span class="h">watch, note, fix.</span><span class="sub">Assista o corte, deixe notas por tempo, acompanhe os edits e siga a transcrição.</span></div>
+    <div class="tabs">
+      <select id="clipSelect" class="tab sel" title="Clipe do projeto"></select>
+      <button class="tab" id="save" title="Salvar review.json e REVIEW.md (Ctrl+S)">Salvar</button>
+      <a class="tab" id="toLook" href="/" title="Voltar ao Look builder">← Look builder</a>
+    </div>
+  </div>
+</header>
+
+<main class="rv-main">
+  <section class="rv-player">
+    <div class="rv-video" id="videoWrap">
+      <video id="video" playsinline preload="metadata"></video>
+      <div class="rv-empty" id="videoEmpty">Escolha um clipe no topo, ou abra <code>/review?project=&lt;slug&gt;</code>.</div>
+      <div class="rv-caption" id="liveCaption"></div>
+    </div>
+    <div class="rv-transport">
+      <button class="btn sm" id="back5" title="−5 s (J)">−5s</button>
+      <button class="btn sm primary" id="play" title="Play / pause (espaço, K)">▶</button>
+      <button class="btn sm" id="fwd5" title="+5 s (L)">+5s</button>
+      <span class="rv-time"><b id="tNow">0:00.0</b> / <span id="tDur">0:00</span></span>
+      <label class="rv-rate">Velocidade <select id="rate"><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option></select></label>
+      <span class="hint rv-keys">Espaço play · N nota · E edit · J/L ±5 s · ←/→ ±1 s · Ctrl+S salvar</span>
+    </div>
+    <div class="rv-timeline" id="timeline" title="Clique para ir ao tempo. Marcadores: notas (laranja), edits (verde), cortes da EDL (vermelho)">
+      <div class="rv-track"><i class="rv-played" id="played"></i><i class="rv-head" id="head"></i></div>
+      <div class="rv-marks" id="marks"></div>
+      <div class="rv-cuts" id="cuts"></div>
+    </div>
+    <form class="rv-quick" id="noteForm">
+      <span class="rv-at" id="noteAt">0:00.0</span>
+      <input id="noteText" placeholder="Nota neste tempo… (Enter adiciona · Shift+Enter vira edit)" autocomplete="off">
+      <select id="noteType" title="Tipo (vira edit)"><option value="">nota</option><option>corte</option><option>gráfico</option><option>legenda</option><option>b-roll</option><option>áudio</option><option>cor</option></select>
+      <button class="btn sm primary" type="submit">Adicionar</button>
+    </form>
+  </section>
+
+  <aside class="rv-side">
+    <nav class="rv-tabs" id="sideTabs">
+      <button class="on" data-tab="notes">Notas <small id="nNotes">0</small></button>
+      <button data-tab="edits">Edits <small id="nEdits">0</small></button>
+      <button data-tab="transcript">Transcrição <small id="nWords">0</small></button>
+    </nav>
+    <div class="rv-pane on" data-pane="notes">
+      <div class="rv-list" id="notesList"></div>
+    </div>
+    <div class="rv-pane" data-pane="edits">
+      <div class="rv-toolbar">
+        <button class="btn sm" id="importEdl" title="Trazer os cortes das EDLs do projeto (cut-silences / cut-mistakes) para a lista">Importar cortes da EDL</button>
+        <button class="btn sm" id="copyEdits" title="Copiar a lista de edits em Markdown">⧉ copiar</button>
+        <label class="hint"><input type="checkbox" id="hideDone"> esconder feitos</label>
+      </div>
+      <div class="rv-list" id="editsList"></div>
+    </div>
+    <div class="rv-pane" data-pane="transcript">
+      <div class="rv-toolbar">
+        <input id="findWord" placeholder="Procurar palavra…" autocomplete="off">
+        <label class="hint"><input type="checkbox" id="follow" checked> seguir o player</label>
+      </div>
+      <div class="rv-words" id="words"><p class="hint">Sem transcrição em <code>assets/</code> deste projeto. Rode a transcrição (ElevenLabs Scribe ou Whisper local) e recarregue.</p></div>
+    </div>
+  </aside>
+</main>
+
+<footer class="tray rv-tray">
+  <span id="status" class="hint">Nada carregado.</span>
+  <span class="hint" id="files"></span>
+</footer>
+
+<script type="module" src="/review.js"></script>
+</body>
+</html>

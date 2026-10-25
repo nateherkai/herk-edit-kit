@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Lula marqueteiro</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+/* ===== video-colagem-oney (vertical) — reference: Gabriel Saab / FAW. Read the skill before changing the system. ===== */
+@font-face{font-family:"Advercase";src:url("assets/fonts/Advercase-Bold.woff2") format("woff2");font-weight:700}
+@font-face{font-family:"Inter";src:url("assets/fonts/Inter-Medium.ttf") format("truetype");font-weight:500}
+@font-face{font-family:"Inter";src:url("assets/fonts/Inter-SemiBold.ttf") format("truetype");font-weight:600}
+:root{--navy:#070b16;--blue:#2f7bff;--glow:#6aa8ff;--red:#ff2d3a;--yel:#ffd21f;--paper:#f3f3f1}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000}
+#reel{position:relative;width:1080px;height:1920px;overflow:hidden;background:#000;font-family:"Advercase",sans-serif;color:#fff}
+
+/* stage = presenter world: camera + titles behind the head + matte in front. Punch-ins/blur move it as one. */
+#stage{position:absolute;inset:0;transform-origin:56% 42%;filter:blur(0px) brightness(1)}
+#stage video{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover}
+#behind{position:absolute;inset:0}
+.bh{position:absolute;left:0;width:1080px;text-align:center;font-weight:700;color:#fff;
+  text-shadow:0 0 34px rgba(106,168,255,.75),0 8px 0 #22408f,0 14px 30px rgba(0,0,0,.45)}
+.bh svg{overflow:visible}
+.bh text{font-family:"Advercase";font-weight:700;fill:#fff}
+
+/* overlays */
+.ov{position:absolute;inset:0;pointer-events:none}
+.scene{position:absolute;inset:0;overflow:hidden}
+.navy{background:radial-gradient(ellipse 70% 55% at 50% 42%,#13204a 0%,#0a1024 55%,#05070f 100%)}
+.navy::before{content:"";position:absolute;inset:-200px;background-image:linear-gradient(rgba(90,150,255,.13) 2px,transparent 2px),linear-gradient(90deg,rgba(90,150,255,.13) 2px,transparent 2px);background-size:90px 90px;transform:perspective(900px) rotateX(38deg) translateY(380px);transform-origin:50% 100%}
+.paper{background:var(--paper)}
+.paper::before{content:"";position:absolute;inset:0;background-image:linear-gradient(#dcdcd8 2px,transparent 2px),linear-gradient(90deg,#dcdcd8 2px,transparent 2px);background-size:96px 96px}
+.paper::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(0,0,0,.28) 100%)}
+.dark{background:radial-gradient(ellipse 80% 60% at 50% 45%,#141414 0%,#000 75%)}
+.persp{position:absolute;inset:0;perspective:1400px}
+.card{position:absolute;border-radius:26px;overflow:hidden;border:5px solid #fff;background:#111;
+  box-shadow:0 0 0 2px rgba(106,168,255,.55),0 0 48px rgba(106,168,255,.55),0 30px 60px rgba(0,0,0,.55)}
+.card img,.card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card img.emo{position:static;inset:auto;width:auto;height:1em;object-fit:contain}
+.card.print{background:#fff}
+.card.print img{object-fit:contain;object-position:50% 0}
+.stick{position:absolute;filter:drop-shadow(0 0 0 #fff) drop-shadow(5px 0 0 #fff) drop-shadow(-5px 0 0 #fff) drop-shadow(0 5px 0 #fff) drop-shadow(0 -5px 0 #fff) drop-shadow(0 22px 30px rgba(0,0,0,.5))}
+.title{position:absolute;left:65px;width:950px;text-align:center;font-weight:700;line-height:.95}
+.chip{position:absolute;display:inline-flex;align-items:center;gap:14px;padding:16px 28px;border-radius:999px;font:700 44px/1 "Advercase";
+  background:rgba(8,14,30,.86);border:3px solid var(--glow);box-shadow:0 0 30px rgba(47,123,255,.55);white-space:nowrap}
+.chip.red{border-color:var(--red);box-shadow:0 0 30px rgba(255,45,58,.6)}
+.chip.yel{border-color:var(--yel);box-shadow:0 0 30px rgba(255,210,31,.5)}
+.chip.white{background:#fff;color:#0b0b0b;border-color:#fff}
+.tag{position:absolute;font:600 26px/1 "Inter";letter-spacing:.08em;text-transform:uppercase;background:#0b0b0b;color:#fff;padding:10px 14px;border-radius:8px}
+.stamp{position:absolute;font:700 120px/1 "Advercase";color:var(--red);border:10px solid var(--red);padding:10px 26px 2px;border-radius:18px;
+  background:rgba(255,255,255,.06);text-shadow:0 0 30px rgba(255,45,58,.5);white-space:nowrap}
+.emo{height:1em;width:auto;vertical-align:-.12em}
+svg.draw path{fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+#flash{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,#fff 0%,#cfe0ff 45%,#2f7bff 100%);opacity:0;mix-blend-mode:screen}
+#leak{position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,170,90,.9),transparent 45%),radial-gradient(circle at 90% 85%,rgba(47,123,255,.9),transparent 50%);opacity:0;mix-blend-mode:screen}
+
+/* functions stack (Saab "counters" with glowing arcs) */
+.fn{position:absolute;left:110px;width:860px;height:170px;display:flex;align-items:center;gap:26px}
+.fn .num{width:86px;height:86px;flex:none;border-radius:50%;display:grid;place-items:center;font:700 54px/1 "Advercase";color:#071025;background:#fff;box-shadow:0 0 34px rgba(106,168,255,.9)}
+.fn .ph{width:200px;height:150px;flex:none;border-radius:20px;overflow:hidden;border:4px solid #fff;box-shadow:0 0 28px rgba(106,168,255,.6);background:#0d1630;display:grid;place-items:center;font-size:96px}
+.fn .ph img{width:100%;height:100%;object-fit:cover}
+.fn .txt{display:flex;flex-direction:column;gap:10px}
+.fn .t{font:700 50px/1 "Advercase";white-space:nowrap}
+.fn .s{display:flex;gap:10px;flex-wrap:wrap}
+.fn .s span{font:600 30px/1 "Inter";background:rgba(47,123,255,.22);border:2px solid rgba(106,168,255,.8);padding:8px 12px;border-radius:10px;white-space:nowrap}
+
+/* checklist */
+.panel{position:absolute;left:120px;width:840px;border-radius:34px;background:rgba(9,14,30,.94);border:3px solid rgba(255,255,255,.18);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.row{position:absolute;left:150px;width:780px;display:flex;align-items:center;gap:22px;font:700 60px/1 "Advercase"}
+.row .emo{height:70px}
+
+/* phone mockup */
+.phone{position:absolute;left:310px;top:360px;width:460px;height:740px;border-radius:66px;background:#0b0b0d;border:12px solid #222;box-shadow:0 0 0 3px #555,0 0 60px rgba(106,168,255,.55),0 40px 80px rgba(0,0,0,.6);overflow:hidden}
+.phone .scr{position:absolute;inset:0;border-radius:52px;overflow:hidden;background:#fff}
+.phone .notch{position:absolute;left:50%;top:14px;width:140px;height:36px;margin-left:-70px;border-radius:20px;background:#000;z-index:3}
+.feed{position:absolute;left:0;top:0;width:100%}
+.feed img{display:block;width:100%;border-bottom:8px solid #eee}
+
+/* captions (Saab: short chunks just under the chin; emphasis words grow) */
+#cap{position:absolute;left:65px;width:950px;top:1330px;height:150px}
+.c{position:absolute;left:0;top:0;width:950px;text-align:center;font:700 58px/1.05 "Advercase";color:var(--capc,#fff);
+  -webkit-text-stroke:3px var(--capst,rgba(0,0,0,.55));paint-order:stroke fill;text-shadow:var(--capsh,0 2px 10px rgba(0,0,0,.45))}
+.c.big{font-size:96px;top:-14px}
+.c.big.red{color:#fff;text-shadow:0 0 34px rgba(255,45,58,.95),0 6px 18px rgba(0,0,0,.5)}
+.c.big.blue{text-shadow:0 0 34px rgba(47,123,255,.95),0 6px 18px rgba(0,0,0,.5)}
+.c.big.yel{color:var(--yel)}
+</style></head><body>
+<div id="reel" data-composition-id="reel" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+
+  <div id="stage">
+    <video id="cam" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="0" muted playsinline></video>
+    <div id="behind">
+      <!-- titles BEHIND the head (the matte below covers them) -->
+      <div class="bh clip" id="bhOney" data-start="14.587" data-duration="0.631" data-track-index="40" style="top:330px">
+        <svg width="1080" height="300" viewBox="0 0 1080 300"><path id="arcA" d="M120 270 Q540 40 960 270" fill="none"/><text font-size="190" letter-spacing="10"><textPath href="#arcA" startOffset="50%" text-anchor="middle">ONEY</textPath></text></svg>
+      </div>
+      <div class="bh clip" id="bhQ" data-start="35.752" data-duration="3.48" data-track-index="41" style="top:300px">
+        <div id="bhQ1" style="font-size:78px;line-height:1">O QUE FAZ UM</div>
+        <div id="bhQ2" style="font-size:118px;line-height:1.02;color:#fff;text-shadow:0 0 40px rgba(47,123,255,1),0 8px 0 #22408f">MARQUETEIRO?</div>
+      </div>
+      <div class="bh clip" id="bhDig" data-start="65.809" data-duration="2.861" data-track-index="42" style="top:330px">
+        <div id="bhDig1" style="font-size:64px;line-height:1;letter-spacing:.06em">HIPÓTESE 2</div>
+        <div id="bhDig2" style="font-size:200px;line-height:1">DIGITAL</div>
+      </div>
+      <div class="bh clip" id="bh2026" data-start="72.85" data-duration="3.586" data-track-index="43" style="top:300px">
+        <div id="bh2026n" style="font-size:300px;line-height:1">2026</div>
+      </div>
+    </div>
+    <video id="fg" src="assets/fg.webm" data-start="0" data-duration="__DUR__" data-track-index="2" muted playsinline></video>
+  </div>
+
+  <audio id="voice" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="1" data-volume="1"></audio>
+  <audio id="music" src="assets/music-bed.mp3" data-start="0" data-duration="__DUR__" data-track-index="3" data-volume="0.07"></audio>
+__SFX__
+
+  <div class="ov">
+    <!-- 0 · PT sticker above the head -->
+    <div class="clip" id="sPT" data-start="0.12" data-duration="2.4" data-track-index="10">
+      <img class="stick" id="ptFlag" src="assets/photos/pt.png" style="left:110px;top:300px;width:300px;transform:rotate(-7deg)" alt="">
+      <div class="chip" id="ptChip" style="left:120px;top:530px">AFASTAR O MARQUETEIRO?</div>
+    </div>
+
+    <!-- 1 · SIDÔNIO name reveal (Saab "DANIEL PENIN") -->
+    <div class="scene navy clip" id="sSid" data-start="2.45" data-duration="1.719" data-track-index="11">
+      <div class="bh" id="sidT" style="top:300px"><svg width="1080" height="260" viewBox="0 0 1080 260"><path id="arcS" d="M70 240 Q540 30 1010 240" fill="none"/><text font-size="96" letter-spacing="3"><textPath href="#arcS" startOffset="50%" text-anchor="middle">SIDÔNIO PALMEIRA</textPath></text></svg></div>
+      <img id="sidCut" src="assets/photos/sidonio-cut.png" style="position:absolute;left:150px;top:470px;width:780px" alt="">
+      <div class="chip white" id="sidChip" style="left:255px;top:1010px">O MARQUETEIRO DO LULA</div>
+    </div>
+
+    <!-- 2 · LULA + 1º turno -->
+    <div class="scene navy clip" id="sLula" data-start="4.169" data-duration="1.911" data-track-index="12">
+      <div class="bh" id="lulaT" style="top:300px"><div style="font-size:210px;line-height:1">LULA</div></div>
+      <img id="lulaCut" src="assets/photos/lula-cut.png" style="position:absolute;left:170px;top:480px;width:740px" alt="">
+      <div class="chip red" id="lulaChip" style="left:300px;top:1010px">1º TURNO 📉</div>
+    </div>
+
+    <!-- 3 · "esse cara convenceu o Lula" — photo card over the blurred presenter -->
+    <div class="clip" id="sCard1" data-start="8.5" data-duration="3.2" data-track-index="13">
+      <div class="persp"><div class="card" id="lsCard" style="left:250px;top:290px;width:580px;height:780px"><img src="assets/photos/lula-sidonio.jpg" style="object-position:50% 20%" alt=""></div></div>
+      <svg class="draw" id="arr1" width="1080" height="1920" style="position:absolute;inset:0"><path d="M985 330 C 930 380, 900 400, 760 470" stroke="#ff2d3a" stroke-width="12"/><path d="M790 440 L 758 472 L 800 486" stroke="#ff2d3a" stroke-width="12"/></svg>
+      <div class="chip red" id="arr1L" style="left:640px;top:280px">ESSE CARA</div>
+      <div id="ring" style="position:absolute;left:300px;top:380px;width:220px;height:220px;border-radius:50%;border:8px solid var(--yel);box-shadow:0 0 34px var(--yel)"></div>
+      <div class="chip yel" id="ringL" style="left:90px;top:640px">LULA</div>
+    </div>
+
+    <!-- 4 · BETS wall (Saab stacked thumbnails) -->
+    <div class="scene dark clip" id="sBets" data-start="11.6" data-duration="2.082" data-track-index="14">
+      <div class="persp">
+        <div class="card" id="bet1" style="left:150px;top:290px;width:780px;height:250px"><img src="assets/photos/cassino.jpg" style="object-position:50% 48%" alt=""><div class="tag" style="right:18px;bottom:16px;top:auto;left:auto">Imagem ilustrativa</div></div>
+        <div class="card print" id="bet2" style="left:150px;top:565px;width:780px;height:240px"><img src="assets/photos/print-bets.png" alt=""></div>
+        <div id="bet3" style="position:absolute;left:150px;top:830px;width:780px;height:250px"><img class="stick" src="assets/photos/davi-cut.png" style="left:20px;top:-60px;height:310px" alt=""><div class="tag" style="left:270px;top:160px">Imagem ilustrativa · Davi Brito</div></div>
+      </div>
+      <div class="stamp" id="betStamp" style="left:190px;top:370px;transform:rotate(-8deg)">PROIBIDAS</div>
+      <div class="chip yel" id="betChip" style="left:420px;top:900px">INFLUENCERS 😭</div>
+    </div>
+
+    <!-- 5 · não falo de política / direita e esquerda / o que o perfil analisa (top zone) -->
+    <div class="clip" id="sLR" data-start="15.329" data-duration="2.191" data-track-index="16">
+      <div class="chip" id="lrL" style="left:80px;top:360px">⬅️ DIREITA</div>
+      <div class="chip red" id="lrR" style="left:580px;top:360px">ESQUERDA ➡️</div>
+      <div id="lrX" style="position:absolute;left:470px;top:470px;font-size:140px;line-height:1">❌</div>
+    </div>
+    <div class="clip" id="sPills" data-start="17.57" data-duration="4.049" data-track-index="17">
+      <div class="chip" id="pl1" style="left:200px;top:290px">💬 COMUNICAÇÃO</div>
+      <div class="chip" id="pl2" style="left:230px;top:390px">🚀 VIRALIZAÇÃO</div>
+      <div class="chip yel" id="pl3" style="left:120px;top:490px">📈 ALCANCE DE SEGUIDORES</div>
+    </div>
+
+    <!-- 6 · eleições / 2º turno -->
+    <div class="clip" id="sUrna" data-start="21.665" data-duration="5.688" data-track-index="18">
+      <div class="persp"><div class="card" id="urnaC" style="left:160px;top:330px;width:760px;height:510px"><img src="assets/photos/urna.jpg" alt=""></div></div>
+      <div class="tag" id="urnaTag" style="left:190px;top:300px">Urna eletrônica · TSE</div>
+      <div class="chip yel" id="urnaChip" style="left:330px;top:880px">2º TURNO</div>
+      <div class="chip" id="urnaChip2" style="left:270px;top:990px">ELEIÇÕES 2026 🇧🇷</div>
+    </div>
+
+    <!-- 7 · Flávio ultrapassa Lula -->
+    <div class="scene navy clip" id="sVs" data-start="27.353" data-duration="3.72" data-track-index="19">
+      <div class="title" id="vsT" style="top:300px;font-size:84px">1º TURNO</div>
+      <div id="vsF" style="position:absolute;left:60px;top:440px;width:480px;height:620px">
+        <img src="assets/photos/flavio-cut.png" style="position:absolute;left:20px;bottom:0;width:440px" alt="">
+        <div class="chip white" style="left:20px;bottom:-20px;font-size:36px">FLÁVIO BOLSONARO</div>
+        <div class="chip yel" id="vsF1" style="left:0;top:40px;font-size:72px;padding:14px 26px">1º</div>
+      </div>
+      <div id="vsL" style="position:absolute;left:560px;top:440px;width:480px;height:620px">
+        <img src="assets/photos/lula-cut.png" style="position:absolute;left:0;bottom:0;width:440px" alt="">
+        <div class="chip white" style="left:150px;bottom:-20px;font-size:36px">LULA</div>
+        <div class="chip" id="vsL2" style="right:20px;top:40px;font-size:72px;padding:14px 26px">2º</div>
+      </div>
+    </div>
+
+    <!-- 8 · "mudar tudo" + marqueteiro mais agressivo: real prints on grid paper -->
+    <div class="scene paper clip" id="sPap1" data-start="31.024" data-duration="4.728" data-track-index="20">
+      <div class="tag" style="left:110px;top:300px">Estadão · via UOL · 05/10/2026</div>
+      <div class="persp">
+        <div class="card print" id="pr1" style="left:110px;top:360px;width:860px;height:570px"><img src="assets/photos/print-mudar-tudo.png" alt=""></div>
+        <div class="card print" id="pr2" style="left:110px;top:360px;width:860px;height:456px"><img src="assets/photos/print-antunes.png" alt=""></div>
+      </div>
+      <div class="stamp" id="mtStamp" style="left:140px;top:860px;transform:rotate(-6deg);font-size:96px">“MUDAR TUDO”</div>
+      <img class="stick" id="gloves" src="assets/photos/luvas.jpg" style="left:600px;top:580px;width:360px;border-radius:24px;transform:rotate(8deg)" alt="">
+      <div class="stamp" id="agStamp" style="left:110px;top:930px;transform:rotate(-5deg);font-size:86px">MAIS AGRESSIVO</div>
+    </div>
+
+    <!-- 9 · as funções do marqueteiro (stack + glowing arcs) -->
+    <div class="clip" id="sFn" data-start="39.112" data-duration="16.108" data-track-index="21">
+      <div class="panel" id="fnP" style="left:70px;width:940px;top:270px;height:870px"></div>
+      <div class="title" id="fnT" style="top:300px;font-size:60px;letter-spacing:.04em">O QUE O MARQUETEIRO FAZ</div>
+      <svg class="draw" width="1080" height="1920" style="position:absolute;inset:0">
+        <path id="arc1" d="M153 450 C 40 500, 40 600, 153 640" stroke="#6aa8ff" stroke-width="7" style="filter:drop-shadow(0 0 10px #2f7bff)"/>
+        <path id="arc2" d="M153 640 C 40 690, 40 790, 153 830" stroke="#6aa8ff" stroke-width="7" style="filter:drop-shadow(0 0 10px #2f7bff)"/>
+        <path id="arc3" d="M153 830 C 40 880, 40 980, 153 1020" stroke="#6aa8ff" stroke-width="7" style="filter:drop-shadow(0 0 10px #2f7bff)"/>
+      </svg>
+      <div class="fn" id="fn1" style="top:365px"><div class="num">1</div><div class="ph"><img src="assets/photos/grupo.jpg" alt=""></div>
+        <div class="txt"><div class="t">ESCUTA O ELEITOR</div><div class="s"><span id="fn1a">pesquisa o que tira o sono</span></div></div></div>
+      <div class="fn" id="fn2" style="top:555px"><div class="num">2</div><div class="ph"><img src="assets/photos/megafone.jpg" alt=""></div>
+        <div class="txt"><div class="t">DEFINE A MENSAGEM</div><div class="s"><span id="fn2a">a frase repetida até você decorar</span></div></div></div>
+      <div class="fn" id="fn3" style="top:745px"><div class="num">3</div><div class="ph">👔</div>
+        <div class="txt"><div class="t">CONSTRÓI A IMAGEM</div><div class="s"><span id="fn3a">como fala</span><span id="fn3b">como aparece</span><span id="fn3c">como se veste</span></div></div></div>
+      <div class="fn" id="fn4" style="top:935px"><div class="num">4</div><div class="ph"><img src="assets/photos/luvas.jpg" alt=""></div>
+        <div class="txt"><div class="t">ESCOLHE AS BRIGAS</div><div class="s"><span id="fn4a">debate?</span><span id="fn4b">tema?</span><span id="fn4c">ataque?</span></div></div></div>
+    </div>
+
+    <!-- 10 · duas hipóteses -->
+    <div class="clip" id="sHip" data-start="55.27" data-duration="3.725" data-track-index="22">
+      <div class="chip" id="hp1" style="left:110px;top:330px">HIPÓTESE 1 ❓</div>
+      <div class="chip" id="hp2" style="left:560px;top:330px">HIPÓTESE 2 ❓</div>
+      <img class="stick" id="hpL" src="assets/photos/lula-cut.png" style="left:430px;top:420px;width:220px" alt="">
+    </div>
+
+    <!-- 11 · o debate: Band e Globo com X neon -->
+    <div class="scene navy clip" id="sDeb" data-start="58.995" data-duration="3.555" data-track-index="23">
+      <div class="title" id="debT" style="top:300px;font-size:100px">1 · O DEBATE</div>
+      <div class="card" id="dbB" style="left:90px;top:470px;width:430px;height:300px;background:#fff"><img src="assets/photos/band.png" style="object-fit:contain;padding:30px" alt=""></div>
+      <div class="card" id="dbG" style="left:560px;top:470px;width:430px;height:300px;background:#000"><img src="assets/photos/globo.png" style="object-fit:contain;padding:24px" alt=""></div>
+      <svg class="draw" width="1080" height="1920" style="position:absolute;inset:0;filter:drop-shadow(0 0 16px #ff2d3a)">
+        <path id="xB1" d="M110 490 L 500 750" stroke="#ff2d3a" stroke-width="18"/><path id="xB2" d="M500 490 L 110 750" stroke="#ff2d3a" stroke-width="18"/>
+        <path id="xG1" d="M580 490 L 970 750" stroke="#ff2d3a" stroke-width="18"/><path id="xG2" d="M970 490 L 580 750" stroke="#ff2d3a" stroke-width="18"/>
+      </svg>
+      <img id="debLula" src="assets/photos/lula-cut.png" style="position:absolute;left:560px;top:690px;width:300px" alt="">
+      <div class="chip red" id="debChip" style="left:170px;top:820px;font-size:60px">NÃO FOI</div>
+    </div>
+
+    <!-- 12 · a cadeira vazia -->
+    <div class="scene dark clip" id="sChair" data-start="62.55" data-duration="3.314" data-track-index="24">
+      <div class="persp"><div class="card" id="chairC" style="left:225px;top:300px;width:630px;height:760px"><img src="assets/photos/cadeira.jpg" alt=""></div></div>
+      <div class="chip white" id="chairL" style="left:230px;top:330px">QUEM NÃO APARECE…</div>
+      <div class="chip red" id="chairL2" style="left:130px;top:960px">…DEIXA OS OUTROS FALAREM</div>
+    </div>
+
+    <!-- 13 · "pífio": the real headline + paragraph -->
+    <div class="scene paper clip" id="sPap2" data-start="68.619" data-duration="4.281" data-track-index="25">
+      <div class="tag" style="left:110px;top:300px">Estadão · via UOL · 05/10/2026</div>
+      <div class="persp">
+        <div class="card print" id="pu1" style="left:110px;top:360px;width:860px;height:600px"><img src="assets/photos/print-uol.png" alt=""></div>
+        <div class="card print" id="pu2" style="left:110px;top:400px;width:860px;height:456px"><img src="assets/photos/print-pifio.png" alt=""></div>
+      </div>
+      <div id="mark" style="position:absolute;left:150px;top:550px;width:500px;height:44px;background:rgba(255,45,58,.35);border-radius:6px;transform-origin:0 50%"></div>
+      <div class="stamp" id="pfStamp" style="left:330px;top:880px;transform:rotate(-7deg);font-size:150px">PÍFIO</div>
+    </div>
+
+    <!-- 14 · palanque → celular -->
+    <div class="clip" id="sPal" data-start="76.436" data-duration="2.917" data-track-index="26">
+      <div class="persp"><div class="card" id="palC" style="left:140px;top:330px;width:800px;height:600px"><img src="assets/photos/comicio.jpg" alt=""></div></div>
+      <div class="chip" id="palL" style="left:330px;top:290px">🎤 PALANQUE</div>
+      <div class="tag" style="left:160px;top:880px">Comício · Porto Alegre · 2022</div>
+    </div>
+    <div class="clip" id="sPhone" data-start="79.258" data-duration="1.79" data-track-index="27">
+      <div id="glow" style="position:absolute;left:-60px;top:820px;width:640px;height:820px;border-radius:50%;background:radial-gradient(closest-side,rgba(170,255,140,.85),rgba(110,255,120,.35) 55%,transparent);mix-blend-mode:screen"></div>
+      <svg class="draw" id="arrP" width="1080" height="1920" style="position:absolute;inset:0"><path d="M140 560 C 90 680, 110 800, 190 930" stroke="#fff" stroke-width="11"/><path d="M150 905 L 192 934 L 205 884" stroke="#fff" stroke-width="11"/></svg>
+      <div class="chip white" id="phL" style="left:90px;top:440px">📱 AQUI</div>
+    </div>
+
+    <!-- 15 · phone mockup: what people see, and THIS video -->
+    <div class="scene navy" id="sMock" style="opacity:0">
+      <div class="persp"><div class="phone" id="ph">
+        <div class="scr">
+          <div class="feed" id="feed"><img src="assets/photos/print-uol.png" alt=""><img src="assets/photos/comicio.jpg" alt=""><img src="assets/photos/print-bets.png" alt=""><img src="assets/photos/flavio-imprensa.jpg" alt=""><img src="assets/photos/print-pifio.png" alt=""><img src="assets/photos/urna.jpg" alt=""></div>
+          <div id="live" style="position:absolute;inset:0;background:#000;opacity:0">
+            <video id="mini" src="assets/clean.mp4" data-start="85.02" data-duration="1.75" data-media-start="85.02" data-track-index="29" muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>
+            <div style="position:absolute;right:16px;bottom:120px;display:flex;flex-direction:column;gap:22px;font-size:44px">❤️💬✈️</div>
+          </div>
+        </div><div class="notch"></div></div></div>
+      <div class="chip yel" id="mkL" style="left:300px;top:275px">VOCÊ, AGORA 👀</div>
+    </div>
+
+    <!-- 16 · política → seu negócio → seu perfil -->
+    <div class="clip" id="sHook" data-start="86.77" data-duration="4.78" data-track-index="30">
+      <div class="chip" id="hk1" style="left:80px;top:400px;font-size:38px">POLÍTICA</div>
+      <div id="hkA" style="position:absolute;left:352px;top:405px;font:700 60px/1 Advercase">➡️</div>
+      <div class="card" id="hk2" style="left:420px;top:285px;width:250px;height:300px"><img src="assets/photos/negocio.jpg" alt=""><div class="tag" style="left:12px;bottom:12px;top:auto">Seu negócio</div></div>
+      <div class="card" id="hk3" style="left:700px;top:285px;width:270px;height:300px;background:#0d0d0f;border-style:dashed">
+        <div style="position:absolute;left:85px;top:40px;width:100px;height:100px;border-radius:50%;background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);padding:5px"><div style="width:100%;height:100%;border-radius:50%;background:#333"></div></div>
+        <div style="position:absolute;left:0;width:100%;top:160px;text-align:center;font:600 30px/1 Inter">seu.perfil</div>
+        <div style="position:absolute;left:30px;width:210px;top:215px;height:46px;border-radius:12px;background:#2f7bff;text-align:center;font:600 26px/46px Inter">Seguir</div>
+      </div>
+    </div>
+
+    <!-- 17 · checklist do seu negócio -->
+    <div class="clip" id="sChk" data-start="91.6" data-duration="6.883" data-track-index="31">
+      <div class="panel" id="chkP" style="top:290px;height:790px"></div>
+      <div class="title" id="chkT" style="top:330px;font-size:64px">O SEU NEGÓCIO</div>
+      <div class="row" id="ck1" style="top:440px">✅ PRODUTO BOM</div>
+      <div class="row" id="ck2" style="top:560px">✅ SERVIÇO BOM</div>
+      <div class="row" id="ck3" style="top:700px;color:#ffb3b8">❌ NÃO FALA NADA</div>
+      <div class="row" id="ck4" style="top:820px;color:#ffb3b8">❌ NÃO FAZ VÍDEO</div>
+      <div class="row" id="ck5" style="top:940px;color:#ffb3b8">❌ NÃO APARECE</div>
+    </div>
+
+    <!-- 18 · o teu concorrente -->
+    <div class="clip" id="sConc" data-start="100.397" data-duration="1.843" data-track-index="32">
+      <div class="chip white" id="cq" style="left:220px;top:330px">SABE QUEM VAI FALAR? 🤔</div>
+      <div class="persp"><div class="card" id="concC" style="left:180px;top:300px;width:720px;height:560px"><img src="assets/photos/xadrez.jpg" alt=""></div></div>
+      <div class="stamp" id="concS" style="left:150px;top:780px;transform:rotate(-6deg);font-size:84px;white-space:normal;text-align:center;width:780px;line-height:.95">O TEU CONCORRENTE</div>
+    </div>
+
+    <!-- 19 · CTA: seguir + Código Viral -->
+    <div class="clip" id="sCta1" data-start="102.19" data-duration="3.111" data-track-index="33">
+      <div class="card" id="prof" style="left:90px;top:300px;width:900px;height:250px;background:#0d0d0f;border-color:#2a2a2e">
+        <div style="position:absolute;left:34px;top:40px;width:170px;height:170px;border-radius:50%;background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);padding:7px"><img src="assets/photos/perfil.jpg" style="position:static;width:100%;height:100%;border-radius:50%;border:5px solid #0d0d0f" alt=""></div>
+        <div style="position:absolute;left:236px;top:56px;font:600 44px/1 Inter">oneyaraujo <span style="color:#3897f0">✔</span></div>
+        <div style="position:absolute;left:236px;top:116px;font:500 30px/1 Inter;color:#aaa">Viralização · Comunicação</div>
+        <div id="follow" style="position:absolute;left:236px;top:168px;width:300px;height:56px;border-radius:14px;background:#2f7bff;text-align:center;font:600 30px/56px Inter">Seguir</div>
+        <div id="following" style="position:absolute;left:236px;top:168px;width:300px;height:56px;border-radius:14px;background:#2a2a2e;text-align:center;font:600 30px/56px Inter;opacity:0">Seguindo</div>
+        <div id="tap" style="position:absolute;left:420px;top:150px;font-size:80px;opacity:0">👆</div>
+      </div>
+    </div>
+    <div class="clip" id="sCta2" data-start="105.301" data-duration="4.449" data-track-index="34">
+      <div class="persp"><div class="card" id="cv" style="left:300px;top:290px;width:480px;height:780px"><img src="assets/photos/modulos-grid.jpg" alt=""></div></div>
+      <div class="chip yel" id="cvT" style="left:300px;top:290px;font-size:56px">CÓDIGO VIRAL</div>
+      <div class="chip white" id="cvL" style="left:330px;top:990px;font-size:52px">🔗 LINK NA BIO</div>
+    </div>
+
+    <div id="leak"></div>
+    <div id="flash"></div>
+  </div>
+
+  <div id="cap">__CAPTIONS__</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const S = "#stage";
+// ---------- helpers ----------
+const punch = (t, s) => tl.to(S, { scale: s, duration: 0.7, ease: "power2.inOut" }, t - 0.2);
+const blurIn = (t, d = 0.45) => tl.to(S, { filter: "blur(0px) brightness(0.72)", duration: d, ease: "sine.inOut" }, t);
+const blurOut = (t, d = 0.45) => tl.to(S, { filter: "blur(0px) brightness(1)", duration: d, ease: "sine.inOut" }, t);
+const flash = (t) => { tl.fromTo("#flash", { opacity: 0 }, { opacity: 0.45, duration: 0.14, ease: "sine.out" }, t); tl.to("#flash", { opacity: 0, duration: 0.55, ease: "sine.inOut" }, t + 0.15); tl.set("#flash", { opacity: 0 }, t + 0.7); };
+const leak = (t) => { tl.fromTo("#leak", { opacity: 0 }, { opacity: 0.5, duration: 0.3, ease: "sine.out" }, t); tl.to("#leak", { opacity: 0, duration: 0.8, ease: "sine.inOut" }, t + 0.3); tl.set("#leak", { opacity: 0 }, t + 1.1); };
+const pop = (s, t, extra = {}) => tl.from(s, { scale: 0.6, opacity: 0, duration: 0.5, ease: "back.out(1.3)", ...extra }, t);
+const rise = (s, t, extra = {}) => tl.from(s, { y: 70, opacity: 0, duration: 0.65, ease: "power2.out", ...extra }, t);
+const slideX = (s, t, x, extra = {}) => tl.from(s, { x: x * 0.6, opacity: 0, duration: 0.6, ease: "power3.out", ...extra }, t);
+const tilt = (s, t, d) => { tl.from(s, { rotationY: -22, rotationX: 6, z: -250, opacity: 0, duration: 0.7, ease: "power3.out" }, t);
+  tl.fromTo(s, { rotationY: 0 }, { rotationY: 6, rotationX: -2, duration: Math.max(0.2, d - 0.15), ease: "sine.inOut", immediateRender: false }, t + 0.7); };
+const stamp = (s, t) => { tl.from(s, { scale: 1.6, opacity: 0, duration: 0.35, ease: "power3.out" }, t); shake(t + 0.3); };
+const shake = (t) => tl.fromTo("#reel", { x: 0, y: 0 }, { keyframes: [{ x: -5, y: 3 }, { x: 4, y: -3 }, { x: -2, y: 2 }, { x: 0, y: 0 }], duration: 0.35, ease: "sine.inOut" }, t);
+const draw = (s, t, d = 0.35) => document.querySelectorAll(s).forEach((p, i) => { const L = p.getTotalLength();
+  tl.set(p, { opacity: 1 }, t + i * 0.12);
+  tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: "power2.inOut" }, t + i * 0.12); });
+const out = (s, t, d = 0.25) => { tl.to(s, { opacity: 0, scale: 0.92, duration: d, ease: "power2.in" }, t); tl.set(s, { opacity: 0 }, t + d + 0.01); };
+const swapCard = (a, b, t) => { tl.to(a, { rotationY: 35, x: -160, opacity: 0, duration: 0.45, ease: "sine.in" }, t); tl.set(a, { opacity: 0 }, t + 0.46);
+  tl.from(b, { rotationY: -35, x: 160, opacity: 0, duration: 0.6, ease: "power3.out" }, t + 0.2); };
+
+// ---------- presenter rhythm ----------
+tl.fromTo(S, { scale: 1.18, filter: "blur(0px) brightness(1)" }, { scale: 1.06, duration: 0.9, ease: "power2.out" }, 0);
+punch(6.08, 1.14); punch(13.74, 1.0); punch(15.314, 1.1); punch(17.52, 1.0); punch(21.665, 1.08);
+punch(35.801, 1.12); punch(55.27, 1.0); punch(58.995, 1.1); punch(65.864, 1.0); punch(72.9, 1.12);
+punch(76.436, 1.0); punch(86.82, 1.1); punch(91.6, 1.0); punch(98.537, 1.16); punch(102.24, 1.0); punch(109.78, 1.14);
+
+// 0 · PT
+pop("#ptFlag", 0.2, { rotation: -40 }); slideX("#ptChip", 1.6, 200);
+// 1 · Sidônio reveal
+flash(2.43); rise("#sidCut", 2.48, { y: 400, duration: 0.6, ease: "expo.out" });
+tl.from("#sidT", { scale: 0.6, opacity: 0, duration: 0.5, ease: "back.out(1.8)" }, 2.55); pop("#sidChip", 2.938);
+tl.to("#sidCut", { scale: 1.05, duration: 1.6, ease: "none", transformOrigin: "50% 30%" }, 2.599);
+// 2 · Lula 1º turno (whip from the right)
+tl.from("#sLula", { xPercent: 100, duration: 0.3, ease: "power3.out" }, 4.169);
+rise("#lulaCut", 4.217, { y: 300 }); tl.from("#lulaT", { y: -80, opacity: 0, duration: 0.45, ease: "back.out(2)" }, 4.312); pop("#lulaChip", 5.533);
+flash(6.05);
+// 3 · esse cara / convenceu o Lula
+blurIn(8.5); tilt("#lsCard", 8.52, 2.6); draw("#arr1 path", 8.62, 0.3); pop("#arr1L", 8.661);
+pop("#ring", 10.3); pop("#ringL", 10.38); blurOut(11.55); out("#sCard1 .persp, #arr1, #arr1L, #ring, #ringL", 11.45, 0.18);
+// 4 · bets wall
+flash(11.58); slideX("#bet1", 11.62, -600); slideX("#bet2", 11.72, 600); slideX("#bet3", 11.82, -600);
+stamp("#betStamp", 11.74); pop("#betChip", 12.3);
+tl.to("#sBets .persp", { scale: 1.06, duration: 2.0, ease: "none" }, 11.62);
+leak(13.663);
+// 5 · Oney / política / direita-esquerda / pilares
+tl.from("#bhOney", { y: 120, opacity: 0, duration: 0.5, ease: "expo.out" }, 14.644);
+slideX("#lrL", 16.435, -400); slideX("#lrR", 16.971, 400); pop("#lrX", 17.12);
+pop("#pl1", 18.752); pop("#pl2", 19.6); pop("#pl3", 20.488);
+// 6 · urna / 2º turno
+blurIn(21.683); tilt("#urnaC", 21.711, 4.8); pop("#urnaTag", 22.008); stamp("#urnaChip", 25.716); pop("#urnaChip2", 26.64);
+blurOut(27.299);
+// 7 · Flávio x Lula
+flash(27.332); slideX("#vsF", 27.408, -600); slideX("#vsL", 27.553, 600); tl.from("#vsT", { y: -60, opacity: 0, duration: 0.4 }, 27.459);
+tl.to("#vsF", { scale: 1.08, y: 0, duration: 0.6, ease: "back.out(1.6)" }, 28.98);
+tl.to("#vsL", { scale: 0.86, y: 60, filter: "grayscale(1) brightness(.7)", duration: 0.6, ease: "power2.out" }, 28.98);
+pop("#vsF1", 29.184); pop("#vsL2", 29.339);
+// 8 · prints: mudar tudo → Otávio Antunes, mais agressivo
+flash(31.005); tilt("#pr1", 31.044, 0.85); stamp("#mtStamp", 31.88);
+swapCard("#pr1", "#pr2", 32.589); tl.to("#mtStamp", { opacity: 0, duration: 0.2 }, 32.589); tl.set("#mtStamp", { opacity: 0 }, 32.778);
+tl.from("#gloves", { x: 600, rotation: 40, duration: 0.3, ease: "power4.in" }, 34.936); stamp("#agStamp", 35.213);
+flash(35.724);
+// 9 · o que faz um marqueteiro (behind the head) + functions stack
+tl.from("#bhQ1", { y: 60, opacity: 0, duration: 0.4, ease: "power3.out" }, 35.844);
+tl.from("#bhQ2", { scale: 0.4, opacity: 0, duration: 0.55, ease: "back.out(1.7)" }, 36.736);
+blurIn(39.088); tl.from("#fnP", { scaleY: 0.2, opacity: 0, duration: 0.5, ease: "power3.out" }, 39.132); tl.from("#fnT", { y: -40, opacity: 0, duration: 0.4 }, 39.136);
+slideX("#fn1", 39.352, -500); pop("#fn1a", 40.335);
+draw("#arc1", 42.632, 0.3); slideX("#fn2", 42.838, 500); pop("#fn2a", 44.051);
+draw("#arc2", 46.82, 0.3); slideX("#fn3", 47.07, -500); pop("#fn3a", 47.951); pop("#fn3b", 48.701); pop("#fn3c", 49.499);
+draw("#arc3", 50.15, 0.3); slideX("#fn4", 50.35, 500); pop("#fn4a", 51.333); pop("#fn4b", 53.116); pop("#fn4c", 54.309);
+tl.fromTo("#sFn .fn", { y: 0 }, { y: -10, duration: 15, ease: "none" }, 39.7);
+blurOut(55.22);
+// 10 · duas hipóteses
+pop("#hp1", 55.981); pop("#hp2", 56.167); rise("#hpL", 58.467);
+// 11 · debate
+flash(58.974); tl.from("#debT", { scale: 1.6, opacity: 0, duration: 0.35, ease: "power3.out" }, 59.048);
+pop("#dbB", 60.603); draw("#xB1, #xB2", 61.1, 0.22); pop("#dbG", 61.493); draw("#xG1, #xG2", 61.961, 0.22);
+rise("#debLula", 60.022, { y: 200 }); stamp("#debChip", 60.25);
+// 12 · cadeira vazia
+leak(62.53); tilt("#chairC", 62.58, 2.7); pop("#chairL", 62.7); slideX("#chairL2", 64.03, 400);
+flash(65.831);
+// 13 · digital (behind the head)
+tl.from("#bhDig1", { opacity: 0, y: 30, duration: 0.3 }, 66.02);
+tl.from("#bhDig2", { scale: 0.3, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 67.65);
+tl.fromTo("#bhDig2", { x: 0 }, { keyframes: [{ x: -12 }, { x: 10 }, { x: -6 }, { x: 0 }], duration: 0.25 }, 68.209);
+// 14 · pífio
+flash(68.598); tilt("#pu1", 68.639, 0.6); swapCard("#pu1", "#pu2", 69.916);
+tl.from("#mark", { scaleX: 0, duration: 0.45, ease: "power2.inOut" }, 71.902); stamp("#pfStamp", 72.481);
+leak(72.85);
+// 15 · 2026 behind the head
+tl.from("#bh2026n", { scale: 0.5, opacity: 0, duration: 0.55, ease: "back.out(1.8)" }, 73.82);
+tl.to("#bh2026n", { scale: 1.08, duration: 2.4, ease: "none" }, 74.42);
+// 16 · palanque → celular (real phone in his hand)
+blurIn(76.458); tilt("#palC", 76.489, 2.3); pop("#palL", 76.67);
+tl.to("#palC", { scale: 0.2, x: -420, y: 500, rotation: -25, opacity: 0, duration: 0.4, ease: "power3.in" }, 79.08);
+tl.to("#palL", { opacity: 0, duration: 0.2 }, 79.08); tl.set("#palL", { opacity: 0 }, 79.258); tl.set("#palC", { opacity: 0 }, 79.267); blurOut(79.213);
+tl.fromTo("#glow", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.1, duration: 0.18 }, 79.77); tl.to("#glow", { opacity: 0, duration: 0.45 }, 80.02); tl.set("#glow", { opacity: 0 }, 80.479);
+draw("#arrP path", 79.87, 0.28); pop("#phL", 80.32);
+// 17 · phone mockup
+flash(80.982); tl.from("#ph", { y: 900, rotationX: 30, duration: 0.6, ease: "expo.out" }, 81.021);
+tl.to("#ph", { rotationY: -10, rotationX: 4, duration: 5, ease: "sine.inOut" }, 81.648);
+tl.fromTo("#feed", { y: 0 }, { y: -1700, duration: 4.0, ease: "power1.inOut" }, 81.251);
+tl.to("#live", { opacity: 1, duration: 0.2 }, 85.02); pop("#mkL", 85.07);
+tl.set("#sMock", { opacity: 1 }, 81.001); tl.set("#sMock", { opacity: 0 }, 86.77);
+flash(86.75);
+// 18 · política → negócio → perfil
+pop("#hk1", 89.012); slideX("#hkA", 89.651, -100); tilt("#hk2", 89.825, 1.5); tilt("#hk3", 90.918, 0.5);
+// 19 · checklist
+blurIn(91.62); tl.from("#chkP", { scaleY: 0, opacity: 0, duration: 0.4, ease: "expo.out" }, 91.65); rise("#chkT", 91.759);
+slideX("#ck1", 92.763, -300); slideX("#ck2", 93.95, -300); slideX("#ck3", 95.85, 300); slideX("#ck4", 97.12, 300); slideX("#ck5", 97.77, 300);
+tl.to("#ck1, #ck2", { opacity: 0.45, duration: 0.3 }, 95.3); blurOut(98.45);
+// 20 · concorrente
+pop("#cq", 100.449); tl.to("#cq", { opacity: 0, duration: 0.15 }, 101.225); tl.set("#cq", { opacity: 0 }, 101.382);
+blurIn(101.225, 0.2); tilt("#concC", 101.252, 0.8); stamp("#concS", 101.63); blurOut(102.16, 0.2);
+// 21 · CTA
+rise("#prof", 102.275); tl.set("#tap", { opacity: 1 }, 104.253); tl.from("#tap", { y: 80, x: 60, duration: 0.25, ease: "power2.out" }, 104.253);
+tl.to("#follow", { scale: 0.92, duration: 0.08, yoyo: true, repeat: 1 }, 104.5); tl.set("#following", { opacity: 1 }, 104.652);
+leak(105.253); blurIn(105.301); tilt("#cv", 105.35, 3.8); pop("#cvT", 107.77);
+pop("#cvL", 108.954); tl.to("#cvL", { scale: 1.08, duration: 0.25, yoyo: true, repeat: 1 }, 109.409); blurOut(109.68);
+
+// captions turn dark on the white grid paper
+tl.set("#cap", { "--capc": "#111", "--capst": "rgba(255,255,255,.85)", "--capsh": "none" }, 31.024); tl.set("#cap", { "--capc": "#fff", "--capst": "rgba(0,0,0,.55)", "--capsh": "0 2px 10px rgba(0,0,0,.45)" }, 35.752);
+tl.set("#cap", { "--capc": "#111", "--capst": "rgba(255,255,255,.85)", "--capsh": "none" }, 68.619); tl.set("#cap", { "--capc": "#fff", "--capst": "rgba(0,0,0,.55)", "--capsh": "0 2px 10px rgba(0,0,0,.45)" }, 72.9);
+// captions entrance: each chunk pops a little
+document.querySelectorAll("#cap .c").forEach((c) => {
+  const t = +c.dataset.start;
+  if (c.classList.contains("big")) tl.from(c, { scale: 0.75, opacity: 0, duration: 0.3, ease: "back.out(1.4)" }, t);
+  else tl.from(c, { y: 10, opacity: 0, duration: 0.16, ease: "sine.out" }, t);
+});
+
+window.__timelines = window.__timelines || {};
+window.__timelines["reel"] = tl;
+</script>
+</body></html>

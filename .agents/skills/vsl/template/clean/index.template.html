@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Profissões · clean</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:"Advercase";src:url(assets/Advercase-Bold.woff2) format("woff2");font-weight:700}
+@font-face{font-family:"Jakarta";src:url(assets/PlusJakartaSans.ttf) format("truetype");font-weight:100 900}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#fff}
+#v{position:relative;width:1080px;height:1920px;overflow:hidden;background:#fff;
+  --acc:#4A90E2; --acc2:#EAF3FF; --ink:#102A43; --sub:#5B7083; --panel:rgba(255,255,255,.90); --font:"Jakarta",sans-serif; --capfont:"Jakarta",sans-serif; --bad:#E5484D; --ok:#2E9E5B}
+#v.skin-med{--acc:#2F80ED; --acc2:#E8F1FD; --ink:#0F2A4A; --sub:#587089; --font:"Segoe UI",Arial,sans-serif; --capfont:"Segoe UI",Arial,sans-serif}
+#v.skin-nutri{--acc:#2E9E5B; --acc2:#EAF7EE; --ink:#163A26; --sub:#5B7D68; --font:"Jakarta",sans-serif; --capfont:"Jakarta",sans-serif}
+#v.skin-adv{--acc:#B8902E; --acc2:#F6F1E6; --ink:#1B1B1B; --sub:#6B655A; --font:Georgia,"Times New Roman",serif; --capfont:Georgia,"Times New Roman",serif}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.emo{display:inline-block;width:1em;height:1em;vertical-align:-.12em;object-fit:contain}
+#ui{position:absolute;inset:0;pointer-events:none}
+.k{position:absolute;opacity:0;will-change:transform,opacity}
+.head{position:absolute;left:90px;right:90px;top:300px;text-align:center;font:700 86px/1.05 "Advercase",sans-serif;color:#fff;letter-spacing:.01em;
+  -webkit-text-stroke:6px rgba(16,42,67,.9);paint-order:stroke fill;text-shadow:0 6px 24px rgba(0,0,0,.35)}
+.head .emo{width:1em;height:1em;vertical-align:-.1em}
+.head i{font-style:normal;color:#8ECAFF}
+.pill{position:absolute;left:50%;transform:translateX(-50%);top:300px;padding:16px 34px;border-radius:999px;background:var(--panel);color:var(--acc);
+  font:800 34px/1 var(--font);letter-spacing:.04em;box-shadow:0 10px 30px rgba(16,42,67,.14);border:2px solid var(--acc2);white-space:nowrap}
+.pill .emo{width:1.2em;height:1.2em;vertical-align:-.2em;margin-right:10px}
+.panel{position:absolute;left:90px;top:290px;width:900px;height:250px;border-radius:30px;background:var(--panel);
+  box-shadow:0 14px 40px rgba(16,42,67,.14);border:2px solid var(--acc2);overflow:visible}
+.panel .big{position:absolute;font-size:150px;line-height:1}
+.panel .big .emo{width:1em;height:1em;vertical-align:top}
+.panel .mid{position:absolute;font-size:96px;line-height:1}
+.panel .mid .emo{width:1em;height:1em;vertical-align:top}
+.panel .chip{position:absolute;padding:12px 22px;border-radius:16px;background:var(--acc2);color:var(--ink);font:800 30px/1.1 var(--font);white-space:nowrap}
+.panel .chip.lg{font-size:38px;padding:16px 28px}
+.panel .chip .emo{width:1.1em;height:1.1em;vertical-align:-.15em;margin-right:8px}
+.panel .arrow{position:absolute;height:6px;border-radius:3px;background:var(--acc);transform-origin:0 50%}
+.panel .arrow:after{content:"";position:absolute;right:-4px;top:-9px;border:12px solid transparent;border-left:16px solid var(--acc);border-right:0}
+.panel .mark{position:absolute;font-size:86px;line-height:1}
+.panel .mark .emo{width:1em;height:1em;vertical-align:top;filter:drop-shadow(0 6px 14px rgba(0,0,0,.18))}
+.panel .dot{position:absolute;width:22px;height:22px;border-radius:50%;background:#6B3E1E;box-shadow:0 0 0 4px rgba(255,255,255,.9)}
+.panel .strike{position:absolute;height:14px;border-radius:7px;background:var(--bad);transform:rotate(-18deg);transform-origin:0 50%;box-shadow:0 4px 12px rgba(229,72,77,.35)}
+.panel .lbl{position:absolute;font:700 26px/1.1 var(--font);color:var(--sub);letter-spacing:.02em}
+.panel .title{position:absolute;font:700 64px/1 "Advercase",sans-serif;color:var(--ink);letter-spacing:.01em}
+.panel .title i{font-style:normal;color:var(--acc)}
+.panel .huge{position:absolute;font:700 120px/1 "Advercase",sans-serif;color:var(--acc);letter-spacing:.01em}
+/* mini timeline da IA editando */
+.tl{position:absolute;left:40px;right:40px;top:150px;height:44px;border-radius:10px;background:rgba(16,42,67,.06);overflow:hidden}
+.tl i{position:absolute;top:6px;height:32px;border-radius:7px;background:var(--acc);opacity:.85;transform-origin:0 50%}
+.tl i.cut{background:var(--bad)}
+.tl .ph{position:absolute;top:0;width:3px;height:44px;background:var(--ink);left:0}
+.bubble{position:absolute;left:40px;top:40px;right:40px;padding:22px 28px;border-radius:24px;background:#fff;border:2px solid var(--acc2);font:600 32px/1.3 var(--font);color:var(--ink);box-shadow:0 8px 24px rgba(16,42,67,.10)}
+.bubble b{display:block;font-weight:800;color:var(--acc);font-size:24px;margin-bottom:6px}
+#cap{position:absolute;left:0;top:0;white-space:nowrap;font:700 50px/1 var(--capfont);color:#fff;letter-spacing:.01em;
+  -webkit-text-stroke:5px rgba(16,42,67,.85);paint-order:stroke fill;text-shadow:0 4px 18px rgba(0,0,0,.35);opacity:0}
+#cap b{color:var(--acc);-webkit-text-stroke:5px rgba(255,255,255,.95);font-weight:800}
+.trans{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:50;pointer-events:none}
+</style></head><body>
+<div id="v" data-composition-id="profissoes" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <video id="cam" src="assets/final-base.mp4" data-start="0" data-duration="__DUR__" data-track-index="0" muted playsinline></video>
+  <div id="ui">
+    <!-- ABERTURA -->
+    <div class="head k" id="h1">TOMANDO CAFÉ ☕<br><i>ENQUANTO A IA EDITA</i></div>
+    <div class="panel k" id="p1">
+      <div class="chip lg k" id="p1a" style="left:40px;top:44px">⏱️ 6 min</div>
+      <div class="arrow k" id="p1ar" style="left:300px;top:76px;width:140px"></div>
+      <div class="chip lg k" id="p1b" style="left:480px;top:44px">✂️ 1 min</div>
+      <div class="mark k" id="p1ok" style="left:760px;top:26px">✅</div>
+      <div class="tl k" id="p1tl"><i style="left:0;width:14%"></i><i class="cut" style="left:15%;width:6%"></i><i style="left:22%;width:18%"></i><i class="cut" style="left:41%;width:5%"></i><i style="left:47%;width:12%"></i><i class="cut" style="left:60%;width:8%"></i><i style="left:69%;width:14%"></i><i class="cut" style="left:84%;width:5%"></i><i style="left:90%;width:10%"></i><div class="ph"></div></div>
+    </div>
+    <div class="panel k" id="p2" style="height:230px">
+      <div class="bubble k" id="p2b"><b>💬 @medico</b><span class="tx"></span></div>
+      <div class="mark k" id="p2ok" style="left:800px;top:120px">✅</div>
+    </div>
+    <!-- MÉDICO -->
+    <div class="pill k" id="pillMed">🩺 MODO MÉDICO</div>
+    <div class="panel k" id="pA">
+      <div class="big" style="left:70px;top:48px">🙂</div>
+      <div class="dot k" id="pAdot" style="left:184px;top:150px"></div>
+      <div class="mark k" id="pAlupa" style="left:150px;top:118px">🔍</div>
+      <div class="chip k" id="pAc1" style="left:330px;top:70px">pinta nova</div>
+      <div class="lbl k" id="pAc2" style="left:330px;top:150px">mudou de cor, tamanho ou formato?</div>
+    </div>
+    <div class="panel k" id="pB">
+      <div class="big" style="left:60px;top:48px">💊</div>
+      <div class="arrow k" id="pBar1" style="left:230px;top:118px;width:150px"></div>
+      <div class="big k" id="pBgripe" style="left:400px;top:48px">🤧</div>
+      <div class="mark k" id="pBx" style="left:470px;top:20px">❌</div>
+      <div class="chip k" id="pBvirus" style="left:590px;top:60px">🦠 gripe é vírus</div>
+      <div class="chip k" id="pBbac" style="left:590px;top:140px">🧫 bactéria</div>
+      <div class="mark k" id="pBok" style="left:880px;top:132px">✅</div>
+    </div>
+    <!-- ADVOGADO -->
+    <div class="pill k" id="pillAdv">⚖️ MODO ADVOGADO</div>
+    <div class="panel k" id="pE">
+      <div class="big" style="left:60px;top:48px">📄</div>
+      <div class="mark k" id="pEx" style="left:150px;top:20px">❌</div>
+      <div class="chip lg k" id="pEc0" style="left:260px;top:40px">demitido sem justa causa</div>
+      <div class="lbl k" id="pEl" style="left:260px;top:130px">você tem direito a:</div>
+    </div>
+    <div class="panel k" id="pF">
+      <div class="chip k" id="pFa" style="left:40px;top:28px">⏱️ aviso prévio</div>
+      <div class="chip k" id="pFb" style="left:40px;top:100px">💰 FGTS + multa de 40%</div>
+      <div class="chip k" id="pFc" style="left:40px;top:172px">🛟 seguro-desemprego</div>
+      <div class="mark k" id="pFok" style="left:760px;top:80px">✅</div>
+    </div>
+    <!-- NUTRI -->
+    <div class="pill k" id="pillNut">🥗 MODO NUTRI</div>
+    <div class="panel k" id="pC">
+      <div class="big" style="left:70px;top:48px">🍚</div>
+      <div class="strike k" id="pCstrike" style="left:56px;top:150px;width:190px"></div>
+      <div class="mark k" id="pCok" style="left:235px;top:40px">✅</div>
+      <div class="chip k" id="pCc1" style="left:360px;top:70px">não precisa cortar</div>
+      <div class="lbl k" id="pCc2" style="left:360px;top:150px">o arroz não é o problema</div>
+    </div>
+    <div class="panel k" id="pD">
+      <div class="big" style="left:70px;top:48px">🥗</div>
+      <div class="chip k" id="pDc1" style="left:260px;top:60px">📋 dieta específica</div>
+      <div class="chip k" id="pDc2" style="left:260px;top:140px">👤 pro seu caso</div>
+    </div>
+    <!-- VOLTA -->
+    <div class="panel k" id="pG">
+      <div class="mid k" id="pG1" style="left:50px;top:30px">🩺</div>
+      <div class="mid k" id="pG2" style="left:190px;top:30px">⚖️</div>
+      <div class="mid k" id="pG3" style="left:330px;top:30px">🥗</div>
+      <div class="mid k" id="pG4" style="left:470px;top:30px">👩‍🍳</div>
+      <div class="mid k" id="pG5" style="left:610px;top:30px">💼</div>
+      <div class="mid k" id="pG6" style="left:750px;top:30px">🧑‍🏫</div>
+      <div class="chip k" id="pGc" style="left:50px;top:156px">qualquer profissão → 📈 melhores conteúdos</div>
+    </div>
+    <div class="panel k" id="pH">
+      <div class="chip lg k" id="pHa" style="left:40px;top:40px">🚀 viralizar</div>
+      <div class="chip lg k" id="pHb" style="left:40px;top:140px">👥 muitos clientes</div>
+      <div class="chip lg k" id="pHc" style="left:450px;top:140px">❤️ muitos seguidores</div>
+    </div>
+    <div class="panel k" id="pI">
+      <div class="big" style="left:60px;top:48px">✋</div>
+      <div class="chip lg k" id="pIa" style="left:250px;top:50px">não mexi em nada</div>
+      <div class="chip lg k" id="pIb" style="left:250px;top:140px">🤖 edição 100% feita pela IA</div>
+    </div>
+    <div class="panel k" id="pJ">
+      <div class="big" style="left:50px;top:48px">🎓</div>
+      <div class="title k" id="pJt" style="left:240px;top:60px">EDIÇÃO <i>VIRAL</i></div>
+      <div class="chip lg k" id="pJc" style="left:240px;top:150px">com Claude</div>
+    </div>
+    <div class="panel k" id="pK">
+      <div class="chip lg k" id="pKa" style="left:40px;top:90px">🎥 grava</div>
+      <div class="arrow k" id="pKar1" style="left:260px;top:120px;width:70px"></div>
+      <div class="chip lg k" id="pKb" style="left:350px;top:90px">🤖 IA edita</div>
+      <div class="arrow k" id="pKar2" style="left:600px;top:120px;width:70px"></div>
+      <div class="chip lg k" id="pKc" style="left:690px;top:90px">✅ 100%</div>
+    </div>
+    <div class="panel k" id="pL">
+      <div class="big" style="left:60px;top:48px">⏱️</div>
+      <div class="huge k" id="pLn" style="left:250px;top:50px">30 min</div>
+      <div class="lbl k" id="pLl" style="left:254px;top:185px">pra aprender a fazer isso</div>
+    </div>
+    <div class="panel k" id="pM" style="height:230px">
+      <div class="bubble k" id="pMb"><b>💬 você</b><span class="tx"></span></div>
+      <div class="chip lg k" id="pMc" style="left:40px;top:150px">📩 link no Direct</div>
+    </div>
+    <div class="panel k" id="pN">
+      <div class="chip lg k" id="pNa" style="left:40px;top:34px">🏷️ promoção de lançamento</div>
+      <div class="huge k" id="pNn" style="left:40px;top:120px">50% OFF</div>
+      <div class="mark k" id="pNw" style="left:800px;top:120px">😉</div>
+    </div>
+  </div>
+  <div id="cap"></div>
+  __TRANS__
+  <audio id="voice" src="assets/final-base.mp4" data-start="0" data-duration="__DUR__" data-track-index="1" data-volume="1"></audio>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const DUR = __DUR__, WORDS = __WORDS__, FACE = __FACE__;
+const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9%]+/g, " ").trim();
+const WN = WORDS.map((w) => ({ n: norm(w.text), s: w.start, e: w.end })).filter((w) => w.n);
+function at(phrase, nth = 1) {
+  const p = norm(phrase).split(" "); let hit = 0;
+  for (let i = 0; i <= WN.length - p.length; i++) {
+    let ok = true; for (let j = 0; j < p.length; j++) if (WN[i + j].n !== p[j]) { ok = false; break; }
+    if (ok && ++hit === nth) return WN[i].s;
+  }
+  throw new Error("frase não encontrada: " + phrase);
+}
+const root = document.getElementById("v");
+const show = (sel, t, d = 0.35) => tl.fromTo(sel, { opacity: 0, y: 26, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: d, ease: "power3.out", immediateRender: false }, t);
+const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.32, ease: "back.out(2)", immediateRender: false }, t);
+const slide = (sel, t, dx = 60) => tl.fromTo(sel, { opacity: 0, x: dx }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out", immediateRender: false }, t);
+const grow = (sel, t, d = 0.3) => { tl.set(sel, { opacity: 1 }, t); tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, opacity: 1, duration: d, ease: "power3.out", immediateRender: false }, t); };
+const out = (sel, t) => tl.to(sel, { opacity: 0, y: -16, duration: 0.25, ease: "power2.in" }, t);
+const skinAt = (cls, t) => tl.set(root, { attr: { class: cls } }, t);
+function typeInto(el, text, t, cps = 22) {
+  const n = text.length;
+  for (let i = 1; i <= n; i++) tl.set(el, { textContent: text.slice(0, i) }, t + i / cps);
+}
+
+// ================= ABERTURA (skin neutra clean) =================
+show("#h1", 0.35, 0.5);
+out("#h1", at("6 minutos") - 0.45);
+const t1 = at("6 minutos") - 0.3;
+show("#p1", t1);
+pop("#p1a", at("6 minutos"));
+tl.set("#p1tl", { opacity: 1 }, at("6 minutos") + 0.1);
+tl.fromTo("#p1tl .ph", { x: 0 }, { x: 817, duration: at("um só minuto") - at("6 minutos") - 0.1, ease: "none", immediateRender: false }, at("6 minutos") + 0.1);
+grow("#p1ar", at("colocar") - 0.1);
+tl.to("#p1tl i.cut", { scaleX: 0, duration: 0.35, ease: "power3.in", stagger: 0.06 }, at("um só minuto") - 0.3);
+pop("#p1b", at("um só minuto"));
+pop("#p1ok", at("um só minuto") + 0.75);
+out("#p1", at("e você deve") - 0.15);
+const t2 = at("e você deve");
+show("#p2", t2);
+show("#p2b", t2 + 0.1, 0.3);
+typeInto("#p2b .tx", "Ô Ney, eu sou médico… funciona pra mim?", at("o ney") - 0.1, 24);
+pop("#p2ok", at("funciona", 2));
+out("#p2", at("explicar") - 0.55);
+
+// ================= MÉDICO =================
+const tMed = at("explicar") - 0.04;
+skinAt("skin-med", tMed);
+show("#pillMed", tMed + 0.1); out("#pillMed", at("pinta") - 0.25);
+show("#pA", at("pinta") - 0.15);
+pop("#pAdot", at("pinta"));
+slide("#pAlupa", at("nova"), 90);
+pop("#pAc1", at("nova") + 0.12);
+show("#pAc2", at("apareceu"), 0.3);
+out("#pA", at("fazendo") - 0.1);
+show("#pB", at("antibiótico") - 0.12);
+grow("#pBar1", at("antibiótico") + 0.25);
+pop("#pBgripe", at("gripe"));
+pop("#pBx", at("não trata") + 0.1);
+pop("#pBvirus", at("vírus"));
+pop("#pBbac", at("antibiótico", 2) + 0.15);
+pop("#pBok", at("bactéria"));
+const tAdv = at("ou pode ser") - 0.04;
+out("#pB", tAdv - 0.45);
+
+// ================= ADVOGADO =================
+skinAt("skin-adv", tAdv);
+show("#pillAdv", tAdv + 0.1); out("#pillAdv", at("pessoas que") - 0.25);
+show("#pE", at("pessoas que") - 0.1);
+pop("#pEc0", at("demitidas"));
+pop("#pEx", at("justa causa") - 0.05);
+show("#pEl", at("você tem direito") - 0.05, 0.3);
+out("#pE", at("aviso prévio") - 0.35);
+show("#pF", at("aviso prévio") - 0.2);
+pop("#pFa", at("aviso prévio"));
+pop("#pFb", at("fgts"));
+pop("#pFc", at("em muitos casos") + 0.9);
+pop("#pFok", at("em muitos casos") + 1.3);
+const tNut = at("ou eu posso") - 0.04;
+out("#pF", tNut - 0.45);
+
+// ================= NUTRI =================
+skinAt("skin-nutri", tNut);
+show("#pillNut", tNut + 0.1); out("#pillNut", at("não precisa") - 0.25);
+show("#pC", at("não precisa") - 0.1);
+grow("#pCstrike", at("cortar"), 0.25);
+tl.to("#pCstrike", { opacity: 0, duration: 0.2 }, at("emagrecer") - 0.05);
+pop("#pCok", at("emagrecer"));
+pop("#pCc1", at("emagrecer") + 0.15);
+show("#pCc2", at("emagrecer") + 0.5, 0.3);
+out("#pC", at("realmente") - 0.35);
+show("#pD", at("realmente") - 0.2);
+pop("#pDc1", at("dieta"));
+pop("#pDc2", at("pro seu caso"));
+const tBack = at("enfim") - 0.14;
+out("#pD", tBack - 0.45);
+
+// ================= VOLTA (skin neutra) =================
+skinAt("", tBack);
+show("#pG", at("não importa") - 0.1);
+["#pG1", "#pG2", "#pG3", "#pG4", "#pG5", "#pG6"].forEach((s, i) => pop(s, at("profissão") - 0.2 + i * 0.07));
+pop("#pGc", at("melhores") - 0.05);
+out("#pG", at("viralizar") - 0.4);
+show("#pH", at("viralizar") - 0.25);
+pop("#pHa", at("viralizar"));
+pop("#pHb", at("clientes") - 0.1);
+pop("#pHc", at("seguidores") - 0.1);
+out("#pH", at("esse vídeo aqui") - 0.15);
+show("#pI", at("esse vídeo aqui"));
+pop("#pIa", at("nada") - 0.05);
+pop("#pIb", at("edição") - 0.05);
+out("#pI", at("ensino") - 0.3);
+show("#pJ", at("ensino") - 0.15);
+pop("#pJt", at("edição viral") - 0.05);
+pop("#pJc", at("claude") - 0.05);
+out("#pJ", at("você vai gravar") - 0.3);
+show("#pK", at("gravar") - 0.12);
+pop("#pKa", at("gravar"));
+grow("#pKar1", at("e ele vai") - 0.1, 0.25);
+pop("#pKb", at("e ele vai") + 0.15);
+grow("#pKar2", at("100") - 0.3, 0.25);
+pop("#pKc", at("100"));
+out("#pK", at("você vai aprender") - 0.25);
+show("#pL", at("você vai aprender") - 0.1);
+pop("#pLn", at("30"));
+show("#pLl", at("30") + 0.4, 0.3);
+out("#pL", at("então digita") - 0.3);
+const tM = at("então digita") - 0.15;
+show("#pM", tM);
+show("#pMb", tM + 0.1, 0.3);
+typeInto("#pMb .tx", "EU QUERO", at("eu quero") - 0.05, 16);
+pop("#pMc", at("link") - 0.05);
+out("#pM", at("promoção") - 0.4);
+show("#pN", at("promoção") - 0.25);
+pop("#pNa", at("promoção"));
+pop("#pNn", at("50"));
+pop("#pNw", at("de nada"));
+out("#pN", DUR - 0.2);
+
+// ================= legenda: uma palavra, logo abaixo do queixo, seguindo a cabeça =================
+const ACC = new Set(["café", "inteligência", "artificial", "edita", "6", "minutos", "médico", "funciona", "pinta", "nova", "antibiótico", "gripe", "vírus", "bactéria", "advogado", "demitidas", "justa", "causa", "aviso", "prévio", "fgts", "40", "seguro-desemprego", "nutricionista", "arroz", "emagrecer", "dieta", "específica", "caso", "profissão", "viralizar", "clientes", "seguidores", "nada", "edição", "viral", "claude", "gravar", "100", "editado", "30", "quero", "link", "promoção", "50", "desconto"]);
+const cap = document.getElementById("cap");
+WORDS.forEach((w, i) => {
+  const txt = w.text.replace(/[.,?!…]+$/g, "");
+  const html = ACC.has(norm(txt)) ? `<b>${txt}</b>` : txt;
+  tl.set(cap, { innerHTML: html, opacity: 1 }, w.start);
+  const next = WORDS[i + 1] ? WORDS[i + 1].start : DUR;
+  if (next - w.end > 0.6) tl.set(cap, { opacity: 0 }, w.end + 0.25);
+});
+const ci = Object.fromEntries(FACE.cols.map((c, i) => [c, i]));
+const rows = FACE.rows, N = rows.length;
+const sm = (k, i, r = 6) => { let s = 0, n = 0; for (let j = Math.max(0, i - r); j <= Math.min(N - 1, i + r); j++) { s += rows[j][k]; n++; } return s / n; };
+for (let i = 0; i < N; i += 3) {
+  const x = sm(ci.mx, i), y = sm(ci.chin, i) + 165;
+  tl.to(cap, { x: x, y: y, xPercent: -50, yPercent: -50, duration: 0.1, ease: "none" }, rows[i][0]);
+}
+tl.set({}, {}, DUR);
+window.__timelines = window.__timelines || {};
+window.__timelines["profissoes"] = tl;
+</script>
+</body></html>

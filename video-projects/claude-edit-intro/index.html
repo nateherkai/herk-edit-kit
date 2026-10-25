@@ -1,14 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
     <title>Claude Edit Intro</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=block"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body {
@@ -68,111 +65,39 @@
     </style>
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="claude-edit-intro"
-      data-start="0"
-      data-duration="23.17"
-      data-width="1920"
-      data-height="1080"
-    >
+    <div data-hf-id="hf-hd58" id="root" data-composition-id="claude-edit-intro" data-start="0" data-duration="23.17" data-width="1920" data-height="1080">
       <!-- Face video + music live inside the composition so asset paths resolve
            relative to the project. The face-wrapper is a non-timed <div> so GSAP
            can animate it without touching the <video> element (which would
            freeze). The lint warning about "video_nested_in_timed_element" is a
            false positive for this pattern — may-shorts-19 renders the same way. -->
-      <div id="face-wrapper">
-        <video
-          id="face-video"
-          data-start="0"
-          data-duration="23.17"
-          data-track-index="0"
-          src="assets/claude-edit-intro.mp4"
-          muted
-          playsinline
-        ></video>
+      <div data-hf-id="hf-w3eg" id="face-wrapper">
+        <video data-hf-id="hf-bga0" id="face-video" data-start="0" data-duration="23.17" data-track-index="0" src="assets/claude-edit-intro.mp4" muted playsinline></video>
       </div>
-      <audio
-        id="face-audio"
-        data-start="0"
-        data-duration="23.17"
-        data-track-index="2"
-        data-volume="1"
-        src="assets/claude-edit-intro.mp4"
-      ></audio>
+      <audio data-hf-id="hf-w4ze" id="face-audio" data-start="0" data-duration="23.17" data-track-index="2" data-volume="1" src="assets/claude-edit-intro.mp4"></audio>
       <!-- BEAT 1 — hook: Claude logo + "Video editing unlocked" on left half.
            Timed to the full intro sentence ("Today, I'm going to show you guys...
            complete game changer for editing videos"). Logo pulses; headline lands
            on the word "editing videos". -->
-      <div
-        id="beat-1"
-        class="scene-layer"
-        data-composition-id="beat-1-hook"
-        data-composition-src="compositions/01-hook.html"
-        data-start="0"
-        data-duration="3.95"
-        data-track-index="4"
-        data-width="1920"
-        data-height="1080"
-      ></div>
+      <div data-hf-id="hf-xrvy" id="beat-1" class="scene-layer" data-composition-id="beat-1-hook" data-composition-src="compositions/01-hook.html" data-start="0" data-duration="3.95" data-track-index="4" data-width="1920" data-height="1080"></div>
 
       <!-- BEAT 2 — "text on screen, like up here". Text slams at word "text" (4.36)
            with a chevron pointing at Nate's hand gesture. -->
-      <div
-        id="beat-2"
-        class="scene-layer"
-        data-composition-id="beat-2-text"
-        data-composition-src="compositions/02-text-on-screen.html"
-        data-start="3.95"
-        data-duration="1.99"
-        data-track-index="4"
-        data-width="1920"
-        data-height="1080"
-      ></div>
+      <div data-hf-id="hf-o72r" id="beat-2" class="scene-layer" data-composition-id="beat-2-text" data-composition-src="compositions/02-text-on-screen.html" data-start="3.95" data-duration="1.99" data-track-index="4" data-width="1920" data-height="1080"></div>
 
       <!-- BEAT 3 — karaoke captions for "or whether that's subtitles down at the
            bottom, like right here". Active-word highlights sync to Whisper onsets. -->
-      <div
-        id="beat-3"
-        class="scene-layer"
-        data-composition-id="beat-3-karaoke"
-        data-composition-src="compositions/03-karaoke-captions.html"
-        data-start="5.94"
-        data-duration="2.70"
-        data-track-index="4"
-        data-width="1920"
-        data-height="1080"
-      ></div>
+      <div data-hf-id="hf-o2ac" id="beat-3" class="scene-layer" data-composition-id="beat-3-karaoke" data-composition-src="compositions/03-karaoke-captions.html" data-start="5.94" data-duration="2.70" data-track-index="4" data-width="1920" data-height="1080"></div>
 
       <!-- BEAT 4 — split-screen: AI agent activity on the LEFT (when he says
            "motion graphics", 9.08s local 0.44s), bar+line chart on the RIGHT
            (when he says "charts", 9.98s local 1.34s). Holds through "pretty much
            anything" so the demo reads before beat 5 takes over. -->
-      <div
-        id="beat-4"
-        class="scene-layer"
-        data-composition-id="beat-4-mg"
-        data-composition-src="compositions/04-mg-and-charts.html"
-        data-start="8.64"
-        data-duration="4.20"
-        data-track-index="4"
-        data-width="1920"
-        data-height="1080"
-      ></div>
+      <div data-hf-id="hf-38ps" id="beat-4" class="scene-layer" data-composition-id="beat-4-mg" data-composition-src="compositions/04-mg-and-charts.html" data-start="8.64" data-duration="4.20" data-track-index="4" data-width="1920" data-height="1080"></div>
 
       <!-- BEAT 5 — PiP mode. Face shrinks to 540x960 docked right; left ~1380px
            holds starfield + grid BG, cycles three side hits, ends on outro CTA. -->
-      <div
-        id="beat-5"
-        class="scene-layer"
-        data-composition-id="beat-5-pip"
-        data-composition-src="compositions/05-pip.html"
-        data-start="12.84"
-        data-duration="10.33"
-        data-track-index="4"
-        data-width="1920"
-        data-height="1080"
-      ></div>
+      <div data-hf-id="hf-nruv" id="beat-5" class="scene-layer" data-composition-id="beat-5-pip" data-composition-src="compositions/05-pip.html" data-start="12.84" data-duration="10.33" data-track-index="4" data-width="1920" data-height="1080"></div>
     </div>
 
     <script>

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Seu Produto – atualização</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:"Advercase";src:url("assets/fonts/Advercase-Regular.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Advercase";src:url("assets/fonts/Advercase-Bold.woff2") format("woff2");font-weight:700}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000;font-family:"Advercase",Georgia,serif;color:#fff}
+#reel{position:relative;width:1080px;height:1920px;overflow:hidden}
+#cam{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover}
+.scrim{position:absolute;left:0;top:0;width:1080px;height:640px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.58) 0%,rgba(0,0,0,.42) 45%,rgba(0,0,0,0) 100%)}
+.shadow{text-shadow:0 2px 3px rgba(0,0,0,.55),0 6px 24px rgba(0,0,0,.45)}
+
+/* top zone: y 130..620 */
+.beat{position:absolute;left:0;top:50px;width:1080px;height:420px;opacity:0}
+.split{display:flex;align-items:center;gap:40px;padding:0 60px 0 70px;height:100%}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:0 90px}
+.center h1{margin:0;font-size:100px;line-height:.98;font-weight:700;letter-spacing:-1px}
+.center .red{margin-top:14px;font-size:52px;color:#ffd21f;font-weight:700}
+.col{flex:1;display:flex;flex-direction:column;gap:18px}
+.col h2{margin:0;font-size:76px;line-height:1;font-weight:700}
+.col .red{font-size:44px;line-height:1.1;color:#ffd21f;font-weight:700}
+.col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.col li{font-size:44px;line-height:1.08;opacity:0}
+.col li b{color:#ffd21f;margin-right:10px}
+.steps{gap:10px!important}.steps li{font-size:41px}
+
+/* story mockup */
+.story{position:relative;flex:none;width:300px;height:533px;border-radius:28px;overflow:hidden;
+  background:radial-gradient(120% 80% at 20% 0%,#3a2a4a 0%,#161616 60%);
+  box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.12);font-family:Arial,Helvetica,sans-serif}
+.story .bars{position:absolute;left:10px;right:10px;top:10px;display:flex;gap:4px}
+.story .bars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.35)}
+.story .bars i.on{background:#fff}
+.story .who{position:absolute;left:12px;top:22px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
+.story .who .av{width:30px;height:30px;border-radius:50%;padding:2px;background:linear-gradient(45deg,#feda75,#d62976,#4f5bd5)}
+.story .who .av span{display:block;width:100%;height:100%;border-radius:50%;background:#555 radial-gradient(circle at 50% 38%,#bbb 0 22%,transparent 23%),#555}
+.story .who em{font-style:normal;font-weight:400;opacity:.7}
+.story .body{position:absolute;left:18px;right:18px;top:92px;bottom:18px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.story .txt{font-size:29px;font-weight:800;line-height:1.15}
+.story .pill{background:#fff;color:#111;border-radius:12px;padding:10px 12px;font-size:17px;font-weight:700;width:100%}
+.story .pill small{display:block;font-weight:400;color:#888;font-size:14px;margin-top:4px}
+.story .dm{align-self:flex-start;background:#3a3a3c;border-radius:16px;padding:7px 11px;font-size:14px;opacity:0}
+.story .dm.r{align-self:flex-end;background:#6b3cf5}
+.story .views{position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:6px;font-size:18px;font-weight:700}
+.story .big{font-size:58px;font-weight:900;line-height:1}
+.story .emoji{font-size:64px;line-height:1}
+.story .link{background:#fff;color:#1a5cff;border-radius:10px;padding:9px 14px;font-weight:800;font-size:18px}
+.story .card{position:absolute;inset:0}
+.col{position:relative}
+#b2-box{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%)}
+.story .blur{filter:blur(5px)}
+.story .empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#aaa;font-size:18px}
+.story .empty .ring{width:92px;height:92px;border-radius:50%;border:3px dashed #666}
+
+/* captions */
+#cap{position:absolute;left:0;top:1420px;width:1080px;height:80px}
+.w{position:absolute;left:0;top:0;width:1080px;text-align:center;font-weight:700;font-size:54px;line-height:80px;
+  -webkit-text-stroke:5px rgba(0,0,0,.8);paint-order:stroke fill;
+  text-shadow:0 2px 8px rgba(0,0,0,.45)}
+
+
+/* B3 profile cards */
+.vs{display:flex;gap:30px;justify-content:center;padding:6px 40px 0}
+.pc{width:470px;border-radius:24px;background:#111;padding:22px 22px 20px;font-family:Arial,Helvetica,sans-serif;box-shadow:0 18px 44px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.1)}
+.pc .top{display:flex;gap:16px;align-items:center}
+.pc .av{flex:none;width:112px;height:112px;border-radius:50%;padding:4px;background:linear-gradient(45deg,#feda75,#d62976,#4f5bd5)}
+.pc .av img,.pc .av .ph{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid #111}
+.pc .av .ph{background-color:#3a3a3c;background-image:radial-gradient(circle at 50% 36%,#8e8e93 0 20%,transparent 21%),radial-gradient(ellipse at 50% 100%,#8e8e93 0 38%,transparent 39%)}
+.pc .meta{min-width:0}
+.pc .u{font-size:30px;font-weight:700;display:flex;align-items:center;gap:8px}
+.pc .ver{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#3897f0;color:#fff;font-size:15px;font-style:normal;font-weight:900}
+.pc .st{margin-top:6px;font-size:24px;color:#ddd;white-space:nowrap;line-height:1}
+.pc .st b{display:block;color:#fff;font-size:58px;font-weight:900;letter-spacing:-1px;margin-bottom:2px}
+.pc .st i{font-style:normal;margin:0 8px;opacity:.5}
+.pc .nm{margin-top:14px;font-size:21px;color:#a8a8a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc .ch{margin-top:20px}
+.pc .cl{font-size:22px;color:#ccc;margin-bottom:8px}
+.pc .bar{height:20px;border-radius:9px;background:#2a2a2a;overflow:hidden}
+.pc .bar span{display:block;height:100%;width:100%;border-radius:9px;background:#ffd21f;transform-origin:left center}
+.vs-h{margin-top:22px;text-align:center;font-size:66px;font-weight:700;color:#ffd21f}
+/* product imagery */
+.ba{display:grid;grid-template-columns:190px 1fr;align-items:center;row-gap:22px;padding:0 50px 0 60px;height:100%}
+.ba .lbl{font-size:62px;font-weight:400;text-align:right;padding-right:26px}
+.ba img{height:182px;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.badge{position:absolute;right:90px;bottom:6px;background:#ffd21f;color:#111;font-weight:700;font-size:40px;padding:10px 22px;border-radius:999px;transform:rotate(-4deg);box-shadow:0 10px 26px rgba(0,0,0,.4)}
+.cover{flex:none;width:236px;height:413px;border-radius:12px;object-fit:cover;box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.col .note{font-size:40px}
+.cta{margin-top:26px;display:flex;align-items:center;justify-content:space-between;width:640px;padding:22px 34px;border-radius:18px;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:40px;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.tenday{flex:none;width:250px;height:360px;border-radius:26px;background:#141414;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 2px rgba(255,210,31,.5)}
+.tenday .n{font-size:180px;line-height:.85;font-weight:700;color:#ffd21f}
+.tenday .d{font-size:54px}
+.tenday .g{font-size:34px;opacity:.8;margin-top:6px}
+</style></head><body>
+<div id="reel" data-composition-id="reel" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <video id="cam" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="0" muted playsinline></video>
+  <audio id="voice" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="1" data-volume="1"></audio>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- B1 antes/agora -->
+  <div class="beat" id="b1"><div class="ba shadow">
+    <div class="lbl" id="l-antes">Antes</div><img id="i-antes" src="assets/img/antes.png" alt="">
+    <div class="lbl" id="l-agora">Agora</div><img id="i-agora" src="assets/img/agora.png" alt="">
+  </div><div class="badge" id="badge">100% atualizado</div></div>
+
+  <!-- B2 capa + mais atualizado -->
+  <div class="beat" id="b2"><div class="split">
+    <img class="cover" id="cv1" src="assets/img/produto.jpg" alt="">
+    <div class="col shadow">
+      <h2 id="b2-h">O curso mais atualizado</h2>
+      <div class="red" id="b2-r">do mercado</div>
+      <div class="note" id="b2-n">Não tem outro.</div>
+    </div>
+  </div></div>
+
+  <!-- B3 você (1 mil) vs eu (100 mil): mesma chance -->
+  <div class="beat" id="b3"><div class="vs">
+    <div class="pc" id="pc-you">
+      <div class="top"><div class="av"><span class="ph"></span></div>
+        <div class="meta"><div class="u">seu.perfil</div>
+          <div class="st"><b id="you-n">1 mil</b>seguidores</div></div></div>
+      <div class="nm">Você</div>
+      <div class="ch"><div class="cl">Chance de 1 mi de views</div><div class="bar"><span id="bar-you"></span></div></div>
+    </div>
+    <div class="pc" id="pc-me">
+      <div class="top"><div class="av"><img src="assets/img/avatar.png" alt=""></div>
+        <div class="meta"><div class="u">seu_usuario <em class="ver">✓</em></div>
+          <div class="st"><b id="me-n">100 mil</b>seguidores</div></div></div>
+      <div class="nm">Seu Nome | Seu Nicho</div>
+      <div class="ch"><div class="cl">Chance de 1 mi de views</div><div class="bar"><span id="bar-me"></span></div></div>
+    </div>
+  </div>
+  <div class="vs-h shadow" id="b3-r">mesma oportunidade</div></div>
+
+  <!-- B4 CTA -->
+  <div class="beat" id="b4"><div class="center shadow">
+    <h1 style="font-size:88px">Entra no Seu Produto</h1>
+    <div class="cta" id="cta"><span>Saiba mais</span><span>›</span></div>
+  </div></div>
+
+  <!-- B5 garantia -->
+  <div class="beat" id="b5"><div class="split">
+    <div class="tenday" id="ten"><div class="n">10</div><div class="d">dias</div><div class="g">de garantia</div></div>
+    <div class="col shadow">
+      <ul>
+        <li id="g1"><b>•</b>Não bateu 1 milhão de views?</li>
+        <li id="g2"><b>•</b>Manda um e-mail</li>
+        <li id="g3"><b>•</b>Dinheiro de volta</li>
+      </ul>
+    </div>
+  </div></div>
+
+  <!-- B6a / B6b -->
+  <div class="beat" id="b6a"><div class="center shadow">
+    <h1>Risco zero</h1>
+    <div class="red" id="b6a-r">você não perde nada</div>
+  </div></div>
+  <div class="beat" id="b6b"><div class="center shadow">
+    <h1>Curso de 3 horas</h1>
+    <div class="red" id="b6b-r">o pior que acontece: aprender a viralizar</div>
+  </div></div>
+
+  <!-- B7 -->
+  <div class="beat" id="b7"><div class="split">
+    <img class="cover" id="cv2" src="assets/img/produto.jpg" alt="">
+    <div class="col shadow">
+      <h2>Conheça o Seu Produto</h2>
+      <div class="red" id="b7-r">mais views hoje mesmo</div>
+    </div>
+  </div></div>
+
+  <div id="cap">__CAPTIONS__</div>
+</div>
+<script>
+const DUR = __DUR__;
+const tl = gsap.timeline({ paused: true });
+
+// ---- captions: static clip per word (built in build-index.mjs); just a small settle on entry
+document.querySelectorAll("#cap .w").forEach((el) => {
+  tl.fromTo(el, { scale: 1.08 }, { scale: 1, duration: 0.14, ease: "power2.out" }, +el.dataset.start);
+});
+
+const inn = (sel, t, v = {}) => tl.fromTo(sel, { opacity: 0, y: v.y ?? 26 }, { opacity: 1, y: 0, duration: v.d ?? 0.5, ease: v.ease ?? "power3.out" }, t);
+const out = (sel, t) => tl.to(sel, { opacity: 0, duration: 0.28, ease: "power1.in" }, t);
+const sub = (sel, t) => tl.from(sel, { opacity: 0, y: 18, duration: 0.45, ease: "power2.out" }, t);
+
+tl.fromTo("#scrim", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0);
+
+// B1 0.1 – 5.1  "Essa nova atualização… 100% do Seu Produto"
+inn("#b1", 0.1, { y: 0, d: 0.25 });
+tl.from(["#l-antes", "#i-antes"], { x: -40, opacity: 0, duration: 0.5, ease: "expo.out", stagger: 0.08 }, 0.15);
+tl.from(["#l-agora", "#i-agora"], { x: 40, opacity: 0, duration: 0.5, ease: "power3.out", stagger: 0.08 }, 1.4);
+tl.to(["#l-antes", "#i-antes"], { opacity: 0.45, duration: 0.4 }, 1.4);
+tl.fromTo("#badge", { opacity: 0, scale: 0.4, rotation: -16 }, { opacity: 1, scale: 1, rotation: -4, duration: 0.4, ease: "back.out(2.2)" }, 3.24);
+out("#b1", 5.05);
+
+// B2 5.16 – 13.5  capa + mais atualizado do mercado
+inn("#b2", 5.2);
+tl.from("#cv1", { y: 40, rotation: -4, opacity: 0, duration: 0.6, ease: "expo.out" }, 5.2);
+sub("#b2-h", 5.7);
+sub("#b2-r", 8.58);
+sub("#b2-n", 10.32);
+out("#b2", 12.9);
+
+// B3 13.0 – 20.55  "mesmo você tendo menos seguidores do que eu, nós ambos… mesma oportunidade"
+tl.set("#b3", { opacity: 1 }, 13.0);
+tl.from("#pc-you", { opacity: 0, y: 40, rotation: -3, duration: 0.55, ease: "expo.out" }, 13.06);
+tl.from("#you-n", { color: "#ffd21f", duration: 0.6 }, 13.76);
+tl.from("#pc-me", { opacity: 0, y: 40, rotation: 3, duration: 0.55, ease: "expo.out" }, 14.96);
+tl.fromTo("#me-n", { scale: 1.3, transformOrigin: "left center" }, { scale: 1, duration: 0.4, ease: "back.out(2)" }, 15.2);
+tl.fromTo(["#bar-you", "#bar-me"], { scaleX: 0 }, { scaleX: 1, duration: 1.1, ease: "power2.inOut" }, 16.04);
+tl.fromTo("#b3-r", { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.45, ease: "expo.out" }, 17.68);
+out("#b3", 20.55);
+
+// B4 20.7 – 26.3  entra / toca aqui / saiba mais
+inn("#b4", 20.7);
+tl.from("#cta", { opacity: 0, y: 30, duration: 0.45, ease: "back.out(1.6)" }, 24.12);
+tl.to("#cta", { scale: 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 3 }, 25.1);
+out("#b4", 26.3);
+
+// B5 26.38 – 32.8  garantia
+inn("#b5", 26.4);
+tl.from("#ten", { scale: 0.85, opacity: 0, duration: 0.5, ease: "back.out(1.8)" }, 26.4);
+inn("#g1", 28.2, { y: 12, d: 0.4 });
+inn("#g2", 30.6, { y: 12, d: 0.4 });
+inn("#g3", 31.94, { y: 12, d: 0.4 });
+out("#b5", 32.8);
+
+// B6a 32.88 – 36.6 / B6b 36.7 – 40.8
+inn("#b6a", 32.9);
+sub("#b6a-r", 33.6);
+out("#b6a", 36.55);
+inn("#b6b", 36.68);
+sub("#b6b-r", 39.0);
+out("#b6b", 40.75);
+
+// B7 40.86 – end
+inn("#b7", 40.9);
+tl.from("#cv2", { y: 40, rotation: 4, opacity: 0, duration: 0.6, ease: "expo.out" }, 40.9);
+tl.fromTo("#b7-r", { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.45, ease: "expo.out" }, 42.6);
+
+window.__timelines = window.__timelines || {};
+window.__timelines["reel"] = tl;
+</script>
+</body></html>

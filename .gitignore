@@ -42,3 +42,10 @@ Thumbs.db
 !examples/showcase/curiosity-reel-2.mp4
 !examples/showcase/curiosity-reel-1.mp4
 !examples/showcase/ais-live-ad.mp4
+
+# Look builder: keep the preset-tile instructions, ignore generated tiles.
+!tools/look-builder/assets/
+tools/look-builder/assets/presets/*.png
+tools/look-builder/assets/presets/*.jpg
+tools/look-builder/assets/presets/*.jpeg
+tools/look-builder/assets/presets/*.webp

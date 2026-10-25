@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Reel</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+/* ===== the creator's phone-edit look — read SKILL.md before changing anything here ===== */
+@font-face{font-family:"Advercase";src:url("assets/fonts/Advercase-Regular.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Advercase";src:url("assets/fonts/Advercase-Bold.woff2") format("woff2");font-weight:700}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000;color:#fff}
+#reel{position:relative;width:1080px;height:1920px;overflow:hidden}
+#cam{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover}
+
+/* Overlays are placed absolutely, like stickers dragged on the phone. No scrims, no cards, no glass. */
+.ov{position:absolute;opacity:0}
+/* Text above the head: Advercase BOLD (thick = readable), left-aligned with the print's left edge. Small, like typed on the phone. */
+.serif{font-family:"Advercase",Georgia,serif;font-weight:700;line-height:1.02;text-align:left}
+/* Instagram "Moderna"/system bold sans for labels such as Ruim / Bom / Viral */
+.sans{font-family:"Inter","Helvetica Neue",Arial,sans-serif;font-weight:700;line-height:1.05}
+/* Shadow ONLY when the wall behind the text is light enough to swallow white text. */
+.sh{text-shadow:0 2px 6px rgba(0,0,0,.45)}
+.y{color:#ffd21f}
+/* Prints: raw crop, square corners, no border, no shadow. */
+.print{position:absolute;display:block;opacity:0}
+/* Apple emoji (iPhone keyboard) — sized by the surrounding font-size */
+img.emo{height:1em;width:auto;vertical-align:-.12em}
+/* Captions: ONE word at a time, small Advercase Bold, white with a deep black outline */
+#cap{position:absolute;left:0;top:__CAP_TOP__px;width:1080px;height:80px}
+.w{position:absolute;left:0;top:0;width:1080px;text-align:center;font-family:"Advercase",Georgia,serif;font-weight:700;font-size:54px;line-height:80px;
+  -webkit-text-stroke:8px #000;paint-order:stroke fill}
+</style></head><body>
+<div id="reel" data-composition-id="reel" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <video id="cam" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="0" muted playsinline></video>
+  <audio id="voice" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="1" data-volume="1"></audio>
+
+  <!-- ===== OVERLAYS (examples — replace per video) =====
+  <div class="ov serif" id="title" style="left:210px;top:720px;width:800px;font-size:60px">*Guia do algoritmo 2026*</div>
+  <img class="print" id="p-likes" src="assets/prints/likes.png" style="left:210px;top:180px;width:520px" alt="">
+  <div class="ov serif sh" id="chk1" style="left:210px;top:650px;width:800px;font-size:44px">✅ Gostam ou Concordam</div>  (left edge = print left edge)
+  -->
+
+  <div id="cap">__CAPTIONS__</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// Everything appears and disappears on a dry cut — no fades, no slides, no scale pops.
+const show = (sel, t) => tl.set(sel, { opacity: 1 }, t);
+const hide = (sel, t) => tl.set(sel, { opacity: 0 }, t);
+
+// ===== TIMING (replace per video; times from anchors.mjs, on the spoken word) =====
+// show("#title", 0.0);
+// show("#p-likes", 0.4); hide("#p-likes", 2.1);
+
+window.__timelines = window.__timelines || {};
+window.__timelines["reel"] = tl;
+</script>
+</body></html>

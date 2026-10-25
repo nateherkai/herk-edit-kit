@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Demo clean · skin por profissão</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:"Advercase";src:url(assets/Advercase-Bold.woff2) format("woff2");font-weight:700}
+@font-face{font-family:"Jakarta";src:url(assets/PlusJakartaSans.ttf) format("truetype");font-weight:100 900}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#fff}
+#demo{position:relative;width:1080px;height:1920px;overflow:hidden;background:#fff;
+  /* skin padrão (neutra, clean): azul-claro quase branco */
+  --acc:#4A90E2; --acc2:#EAF3FF; --ink:#102A43; --sub:#5B7083; --panel:rgba(255,255,255,.90); --font:"Jakarta",sans-serif; --capfont:"Jakarta",sans-serif; --bad:#E5484D; --ok:#2E9E5B}
+#demo.skin-med{--acc:#2F80ED; --acc2:#E8F1FD; --ink:#0F2A4A; --sub:#587089; --font:"Segoe UI",Arial,sans-serif; --capfont:"Segoe UI",Arial,sans-serif}
+#demo.skin-nutri{--acc:#2E9E5B; --acc2:#EAF7EE; --ink:#163A26; --sub:#5B7D68; --font:"Jakarta",sans-serif; --capfont:"Jakarta",sans-serif}
+#demo.skin-adv{--acc:#B8902E; --acc2:#F6F1E6; --ink:#1B1B1B; --sub:#6B655A; --font:Georgia,"Times New Roman",serif; --capfont:Georgia,serif}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.emo{display:inline-block;width:1em;height:1em;vertical-align:-.12em;object-fit:contain}
+#ui{position:absolute;inset:0;pointer-events:none}
+.k{position:absolute;opacity:0;will-change:transform,opacity}
+.pill{position:absolute;left:50%;transform:translateX(-50%);top:300px;padding:16px 34px;border-radius:999px;background:var(--panel);color:var(--acc);
+  font:800 34px/1 var(--font);letter-spacing:.04em;box-shadow:0 10px 30px rgba(16,42,67,.14);border:2px solid var(--acc2);white-space:nowrap}
+.pill .emo{width:1.2em;height:1.2em;vertical-align:-.2em;margin-right:10px}
+.panel{position:absolute;left:90px;top:290px;width:900px;height:250px;border-radius:30px;background:var(--panel);
+  box-shadow:0 14px 40px rgba(16,42,67,.14);border:2px solid var(--acc2);overflow:visible}
+.panel .big{position:absolute;font-size:150px;line-height:1}
+.panel .big .emo{width:1em;height:1em;vertical-align:top}
+.panel .chip{position:absolute;padding:12px 22px;border-radius:16px;background:var(--acc2);color:var(--ink);font:800 30px/1.1 var(--font);white-space:nowrap}
+.panel .chip .emo{width:1.1em;height:1.1em;vertical-align:-.15em;margin-right:8px}
+.panel .arrow{position:absolute;height:6px;border-radius:3px;background:var(--acc);transform-origin:0 50%}
+.panel .arrow:after{content:"";position:absolute;right:-4px;top:-9px;border:12px solid transparent;border-left:16px solid var(--acc);border-right:0}
+.panel .mark{position:absolute;font-size:86px;line-height:1}
+.panel .mark .emo{width:1em;height:1em;vertical-align:top;filter:drop-shadow(0 6px 14px rgba(0,0,0,.18))}
+.panel .dot{position:absolute;width:22px;height:22px;border-radius:50%;background:#6B3E1E;box-shadow:0 0 0 4px rgba(255,255,255,.9)}
+.panel .strike{position:absolute;height:14px;border-radius:7px;background:var(--bad);transform:rotate(-18deg);transform-origin:0 50%;box-shadow:0 4px 12px rgba(229,72,77,.35)}
+.panel .lbl{position:absolute;font:700 26px/1.1 var(--font);color:var(--sub);letter-spacing:.02em}
+#cap{position:absolute;left:0;top:0;white-space:nowrap;font:700 50px/1 var(--capfont);color:#fff;letter-spacing:.01em;
+  -webkit-text-stroke:5px rgba(16,42,67,.85);paint-order:stroke fill;text-shadow:0 4px 18px rgba(0,0,0,.35);opacity:0}
+#cap b{color:var(--acc);-webkit-text-stroke:5px rgba(255,255,255,.95);font-weight:800}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.trans{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:50;pointer-events:none}
+</style></head><body>
+<div id="demo" data-composition-id="demo" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <video id="cam" src="assets/demo.mp4" data-start="0" data-duration="__DUR__" data-track-index="0" muted playsinline></video>
+  <div id="ui">
+    <!-- MÉDICO -->
+    <div class="pill k" id="pillMed">🩺 MODO MÉDICO</div>
+    <div class="panel k" id="pA">
+      <div class="big" style="left:70px;top:48px">🙂</div>
+      <div class="dot k" id="pAdot" style="left:184px;top:150px"></div>
+      <div class="mark k" id="pAlupa" style="left:150px;top:118px">🔍</div>
+      <div class="chip k" id="pAc1" style="left:330px;top:70px">pinta nova</div>
+      <div class="lbl k" id="pAc2" style="left:330px;top:150px">mudou de cor, tamanho ou formato?</div>
+    </div>
+    <div class="panel k" id="pB" style="height:250px">
+      <div class="big" style="left:60px;top:48px">💊</div>
+      <div class="arrow k" id="pBar1" style="left:230px;top:118px;width:150px"></div>
+      <div class="big k" id="pBgripe" style="left:400px;top:48px">🤧</div>
+      <div class="mark k" id="pBx" style="left:470px;top:20px">❌</div>
+      <div class="chip k" id="pBvirus" style="left:590px;top:60px">🦠 gripe é vírus</div>
+      <div class="chip k" id="pBbac" style="left:590px;top:140px">🧫 bactéria</div>
+      <div class="mark k" id="pBok" style="left:880px;top:132px">✅</div>
+    </div>
+    <!-- NUTRI -->
+    <div class="pill k" id="pillNut">🥗 MODO NUTRI</div>
+    <div class="panel k" id="pC">
+      <div class="big" style="left:70px;top:48px">🍚</div>
+      <div class="strike k" id="pCstrike" style="left:56px;top:150px;width:190px"></div>
+      <div class="mark k" id="pCok" style="left:235px;top:40px">✅</div>
+      <div class="chip k" id="pCc1" style="left:360px;top:70px">não precisa cortar</div>
+      <div class="lbl k" id="pCc2" style="left:360px;top:150px">o arroz não é o problema</div>
+    </div>
+    <div class="panel k" id="pD">
+      <div class="big" style="left:70px;top:48px">🥗</div>
+      <div class="chip k" id="pDc1" style="left:260px;top:60px">📋 dieta específica</div>
+      <div class="chip k" id="pDc2" style="left:260px;top:140px">👤 pro seu caso</div>
+    </div>
+  </div>
+  <div id="cap"></div>
+  <div id="flash"></div>
+  <!-- transições do pack do Oney (Cinemarkers "Alpha Transition 1": film burn com alpha, 0,47 s) cobrindo cada corte -->
+  <video id="trans-med" class="trans" src="assets/trans/alpha-1.webm" data-start="__TMED__" data-duration="0.466" data-track-index="2" muted playsinline></video>
+  <video id="trans-nut" class="trans" src="assets/trans/alpha-1.webm" data-start="__TNUT__" data-duration="0.466" data-track-index="2" muted playsinline></video>
+  <audio id="voice" src="assets/demo.mp4" data-start="0" data-duration="__DUR__" data-track-index="1" data-volume="1"></audio>
+  <audio id="sfx-trans-med" src="assets/trans/alpha-1.wav" data-start="__TMED__" data-duration="0.458" data-track-index="3" data-volume="0.45"></audio>
+  <audio id="sfx-trans-nut" src="assets/trans/alpha-1.wav" data-start="__TNUT__" data-duration="0.458" data-track-index="3" data-volume="0.45"></audio>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const DUR = __DUR__, WORDS = __WORDS__, FACE = __FACE__;
+const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9%]+/g, " ").trim();
+const WN = WORDS.map((w) => ({ n: norm(w.text), s: w.start, e: w.end })).filter((w) => w.n);
+function at(phrase, nth = 1) {
+  const p = norm(phrase).split(" "); let hit = 0;
+  for (let i = 0; i <= WN.length - p.length; i++) {
+    let ok = true; for (let j = 0; j < p.length; j++) if (WN[i + j].n !== p[j]) { ok = false; break; }
+    if (ok && ++hit === nth) return WN[i].s;
+  }
+  throw new Error("frase não encontrada: " + phrase);
+}
+const root = document.getElementById("demo");
+const show = (sel, t, d = 0.35) => tl.fromTo(sel, { opacity: 0, y: 26, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: d, ease: "power3.out", immediateRender: false }, t);
+const pop = (sel, t) => tl.fromTo(sel, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.32, ease: "back.out(2)", immediateRender: false }, t);
+const slide = (sel, t, dx = 60) => tl.fromTo(sel, { opacity: 0, x: dx }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out", immediateRender: false }, t);
+const grow = (sel, t, d = 0.3) => { tl.set(sel, { opacity: 1 }, t); tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, opacity: 1, duration: d, ease: "power3.out", immediateRender: false }, t); };
+const out = (sel, t) => tl.to(sel, { opacity: 0, y: -16, duration: 0.25, ease: "power2.in" }, t);
+const flash = (t) => { tl.fromTo("#flash", { opacity: 0 }, { opacity: 0.96, duration: 0.07, immediateRender: false }, t); tl.to("#flash", { opacity: 0, duration: 0.38, ease: "power2.out" }, t + 0.07); };
+const skin = (cls, t) => tl.call(() => { root.className = cls; }, [], t);
+// A troca de skin precisa ser determinística em qualquer seek: registra também como set de atributo
+const skinAt = (cls, t) => tl.set(root, { attr: { class: cls } }, t);
+
+// ---------------- MÉDICO (clipe da Higgsfield começa em "explicar": corte + flash) ----------------
+const tMed = at("explicar") - 0.04;
+skinAt("skin-med", tMed); // transição do pack cobre o corte (ver <video class="trans">)
+show("#pillMed", tMed + 0.08); out("#pillMed", at("pinta") - 0.25);
+show("#pA", at("pinta") - 0.15);
+pop("#pAdot", at("pinta"));
+slide("#pAlupa", at("nova"), 90);
+pop("#pAc1", at("nova") + 0.12);
+show("#pAc2", at("apareceu"), 0.3);
+out("#pA", at("fazendo") - 0.1);
+show("#pB", at("antibiótico") - 0.12);
+grow("#pBar1", at("antibiótico") + 0.25);
+pop("#pBgripe", at("gripe"));
+pop("#pBx", at("não trata") + 0.1);
+pop("#pBvirus", at("vírus"));
+pop("#pBbac", at("antibiótico", 2) + 0.15);
+pop("#pBok", at("bactéria"));
+
+// ---------------- NUTRI (corte do demo = início do clipe da nutri) ----------------
+const tNut = at("ou eu posso") - 0.04;
+out("#pB", tNut - 0.5);
+skinAt("skin-nutri", tNut);
+show("#pillNut", tNut + 0.08); out("#pillNut", at("não precisa") - 0.25);
+show("#pC", at("não precisa") - 0.1);
+grow("#pCstrike", at("cortar"), 0.25);
+tl.to("#pCstrike", { opacity: 0, duration: 0.2 }, at("emagrecer") - 0.05);
+pop("#pCok", at("emagrecer"));
+pop("#pCc1", at("emagrecer") + 0.15);
+show("#pCc2", at("emagrecer") + 0.5, 0.3);
+out("#pC", at("realmente") - 0.35);
+show("#pD", at("realmente") - 0.2);
+pop("#pDc1", at("dieta"));
+pop("#pDc2", at("pro seu caso"));
+out("#pD", DUR - 0.3);
+
+// ---------------- legenda: uma palavra por vez, logo abaixo do queixo, seguindo a cabeça ----------------
+const ACC = new Set(["médico", "pinta", "nova", "antibiótico", "gripe", "vírus", "bactéria", "nutricionista", "arroz", "emagrecer", "dieta", "específica", "caso"]);
+const cap = document.getElementById("cap");
+WORDS.forEach((w, i) => {
+  const txt = w.text.replace(/[.,?!…]+$/g, "");
+  const key = norm(txt);
+  const html = ACC.has(key) || ACC.has(txt.toLowerCase()) ? `<b>${txt}</b>` : txt;
+  tl.set(cap, { innerHTML: html, opacity: 1 }, w.start);
+  const next = WORDS[i + 1] ? WORDS[i + 1].start : DUR;
+  if (next - w.end > 0.6) tl.set(cap, { opacity: 0 }, w.end + 0.25);
+});
+// posição: média móvel do rastreio (mx, chin), amostrada a cada 3 quadros
+const ci = Object.fromEntries(FACE.cols.map((c, i) => [c, i]));
+const rows = FACE.rows, N = rows.length;
+const sm = (k, i, r = 6) => { let s = 0, n = 0; for (let j = Math.max(0, i - r); j <= Math.min(N - 1, i + r); j++) { s += rows[j][k]; n++; } return s / n; };
+for (let i = 0; i < N; i += 3) {
+  const x = sm(ci.mx, i), y = sm(ci.chin, i) + 165; // logo abaixo do queixo, na linha da gola
+  tl.to(cap, { x: x, y: y, xPercent: -50, yPercent: -50, duration: 0.1, ease: "none" }, rows[i][0]);
+}
+tl.set({}, {}, DUR);
+window.__timelines = window.__timelines || {};
+window.__timelines["demo"] = tl;
+</script>
+</body></html>

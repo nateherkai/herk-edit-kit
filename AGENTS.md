@@ -31,6 +31,7 @@ For one stage, load the matching local skill:
 | Narrative arc, persistent world, and visual callbacks | `video-storytelling` |
 | Overlay beats, paper takeovers, and glass cards | `hyperframes-video-beats` |
 | Select or extend styles and templates | `style-library` |
+| Pick a look visually over your own clip | `npm run look-builder` (`tools/look-builder/`) |
 | HTML compositions and media timing | `hyperframes` |
 | Preview, lint, and rendering | `hyperframes-cli` |
 | Timeline animation | `gsap` |

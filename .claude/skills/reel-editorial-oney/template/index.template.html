@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Reel</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+/* ===== Editorial "AI-edited" reel look — read SKILL.md before changing anything here ===== */
+@font-face{font-family:"EdSans";src:url("assets/fonts/Inter-SemiBold.ttf") format("truetype");font-weight:600}
+@font-face{font-family:"EdSans";src:url("assets/fonts/Inter-Medium.ttf") format("truetype");font-weight:500}
+@font-face{font-family:"EdSerif";src:url("assets/fonts/InstrumentSerif-Italic.woff2") format("woff2")}  /* Instrument Serif Italic (OFL) */
+@font-face{font-family:"EdHand";src:url("assets/fonts/Caveat-Bold.woff2") format("woff2")}  /* Caveat (OFL) */
+:root{--y:#f4e27c;--ink:#111;--shadow:0 3px 22px rgba(0,0,0,.30),0 1px 3px rgba(0,0,0,.28)}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000;color:#fff}
+#reel{position:relative;width:1080px;height:1920px;overflow:hidden}
+
+/* Camera: a non-timed wrapper we punch in/out with hard cuts. Angle clips sit on top of #cam inside it. */
+#camwrap{position:absolute;inset:0;transform-origin:50% 38%}
+#camwrap video{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover}
+
+/* Shared text voice: lowercase neo-grotesk, tight tracking; the "voice" word in pale-yellow condensed italic serif. */
+.sans{font-family:"EdSans",Helvetica,Arial,sans-serif;font-weight:600;letter-spacing:-.035em;line-height:.98;text-shadow:var(--shadow)}
+.serif{font-family:"EdSerif",Georgia,serif;color:var(--y);letter-spacing:-.01em;line-height:.9;text-shadow:var(--shadow)}
+.ov{position:absolute;opacity:0}
+
+/* Phrase stack: a sentence built line by line (mixing .sans / .serif lines), usually in the top third. */
+.stack{position:absolute;left:0;width:1080px;text-align:center}
+.stack .ln{display:block;opacity:0}
+.stack .ln.sans{font-size:104px}
+.stack .ln.serif{font-size:132px}
+
+/* Cards: real prints in rounded phone-like frames with a soft drop shadow. */
+.card{position:absolute;opacity:0;border-radius:34px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.38),0 4px 12px rgba(0,0,0,.2);background:#fff}
+.card img{display:block;width:100%;height:auto}
+
+/* Thumb scatter / film strip / grid wall use small rounded thumbs. */
+.thumb{position:absolute;opacity:0;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.strip{position:absolute;left:0;height:330px;display:flex;gap:14px;opacity:0}
+.strip .fr{flex:none;width:250px;height:330px;border-radius:14px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.strip .fr img{width:100%;height:100%;object-fit:cover;display:block}
+.wall{position:absolute;left:-20px;width:1120px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:#f2ede6;padding:8px;opacity:0}
+.wall img{width:100%;height:360px;object-fit:cover;display:block}
+.wall.top{top:0;clip-path:polygon(0 0,100% 0,100% 92%,93% 96%,84% 91%,72% 97%,61% 92%,49% 98%,37% 91%,25% 97%,13% 92%,4% 97%,0 93%)}
+.wall.bot{bottom:0;clip-path:polygon(0 7%,6% 3%,17% 8%,29% 2%,41% 8%,53% 3%,64% 9%,76% 2%,88% 8%,96% 3%,100% 6%,100% 100%,0 100%)}
+
+/* Dark card: black rounded panel with a typed line + serif keyword (for "custom animation"-type beats). */
+.dark{position:absolute;opacity:0;border-radius:30px;background:#0d0d0d;box-shadow:0 24px 60px rgba(0,0,0,.45);padding:48px 40px;text-align:center}
+
+/* Handwritten note + drawn arrow. */
+.note{position:absolute;opacity:0;font-family:"EdHand",cursive;font-size:86px;line-height:1.05;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.note svg{display:block;overflow:visible}
+.note path{fill:none;stroke:#fff;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+
+/* Text toolbar (B I U ↺) — the "restyle" move that turns a sans phrase into the serif voice. */
+.toolbar{position:absolute;opacity:0;display:flex;gap:30px;align-items:center;background:#fff;color:#222;border-radius:16px;padding:14px 26px;
+  font-family:Georgia,serif;font-size:34px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toolbar .on{background:#dfe6ff;border-radius:8px;padding:0 8px}
+.cursor{position:absolute;opacity:0;width:34px;height:34px}
+
+/* Captions: ONE word at a time, centred mid-frame, lowercase. Keywords switch to the serif voice. */
+#cap{position:absolute;left:0;top:__CAP_TOP__px;width:1080px;height:140px}
+.w{position:absolute;left:40px;top:0;width:1000px;text-align:center;font-family:"EdSans",Helvetica,Arial,sans-serif;font-weight:600;
+  font-size:92px;letter-spacing:-.035em;line-height:140px;color:#fff;text-shadow:var(--shadow)}
+.w.em{font-family:"EdSerif",Georgia,serif;font-weight:400;font-size:124px;letter-spacing:-.01em;color:var(--y)}
+.w.sm{font-size:42px}
+.w.em.sm{font-size:56px}
+</style></head><body>
+<div id="reel" data-composition-id="reel" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <div id="camwrap">
+    <video id="cam" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="0" muted playsinline></video>
+    <!-- Second camera angle (same take, cut with the same keeps → angle2-clean.mp4). One clip per stretch:
+    <video class="ang" src="assets/angle2-clean.mp4" data-start="6.2" data-duration="4.1" data-media-start="6.2" data-track-index="2" muted playsinline></video>
+    -->
+  </div>
+  <audio id="voice" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="1" data-volume="1"></audio>
+
+  <!-- ===== OVERLAYS (examples — replace per video; delete what you don't use) =====
+  <div class="stack" id="st1" style="top:150px">
+    <span class="ln sans">a gente vai</span><span class="ln sans">aprender a</span>
+    <span class="ln serif">fazer o claude</span><span class="ln serif">editar</span>
+  </div>
+  <div class="card" id="c1" style="left:600px;top:260px;width:380px"><img src="assets/prints/a.png" alt=""></div>
+  <div class="note" id="n1" style="left:70px;top:420px">eu sou só<br>criador
+    <svg width="160" height="90"><path d="M10 6 C 0 60, 60 80, 140 70 M118 52 L140 70 L116 86"/></svg></div>
+  <div class="thumb sc" style="--x:-330px;--y:-380px;--r:-8deg;left:465px;top:760px;width:150px;height:260px"><img src="assets/thumbs/1.jpg" alt=""></div>
+  <div class="strip" id="strip1" style="top:200px"><div class="fr"><img src="assets/thumbs/1.jpg" alt=""></div> …</div>
+  <div class="wall top" id="wt"> <img …> ×6 </div>  <div class="wall bot" id="wb"> <img …> ×6 </div>
+  <div class="dark" id="d1" style="left:640px;top:380px;width:400px"><div class="sans" style="font-size:40px">você ganha uma</div><div class="serif" style="font-size:96px">animação</div></div>
+  <div class="toolbar" id="tb" style="left:330px;top:300px"><b>B</b><i>I</i><u>U</u><span class="on">Aa</span></div>
+  <div class="ov sans" id="ph-sans" style="left:0;width:1080px;text-align:center;top:380px;font-size:96px">combina com ela</div>
+  <div class="ov serif" id="ph-serif" style="left:0;width:1080px;text-align:center;top:370px;font-size:124px">combina com ela</div>
+  -->
+
+  <div id="cap">__CAPTIONS__</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const E = "power3.out";
+const show = (s, t) => tl.set(s, { opacity: 1 }, t);
+const hide = (s, t) => tl.set(s, { opacity: 0 }, t);
+// Camera: hard punch-in/out on a sentence boundary (1 = wide). Never animate the zoom.
+const punch = (scale, t, origin = "50% 38%") => tl.set("#camwrap", { scale, transformOrigin: origin }, t);
+// Phrase stack: each line blurs/rises in on its spoken word; whole stack fades out.
+const line = (s, t) => tl.fromTo(s, { opacity: 0, y: 26, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.32, ease: E }, t);
+const fadeOut = (s, t, d = 0.25) => tl.to(s, { opacity: 0, duration: d, ease: "power2.in" }, t);
+// Card: slides in from a side with a slight tilt that settles.
+const cardIn = (s, t, from = "right", rot = -3) => tl.fromTo(s, { opacity: 0, x: from === "right" ? 260 : -260, y: -40, rotation: rot + (from === "right" ? 9 : -9) },
+  { opacity: 1, x: 0, y: 0, rotation: rot, duration: 0.55, ease: E }, t);
+const cardOut = (s, t) => tl.to(s, { opacity: 0, y: -30, scale: 0.96, duration: 0.25, ease: "power2.in" }, t);
+// Scatter: thumbs burst out from the speaker to their --x/--y/--r offsets, staggered.
+const scatter = (s, t) => document.querySelectorAll(s).forEach((el, i) => {
+  const cs = getComputedStyle(el);
+  tl.fromTo(el, { opacity: 0, x: 0, y: 0, scale: 0.3, rotation: 0 },
+    { opacity: 1, x: parseFloat(cs.getPropertyValue("--x")), y: parseFloat(cs.getPropertyValue("--y")), rotation: parseFloat(cs.getPropertyValue("--r")) || 0,
+      scale: 1, duration: 0.5, ease: "back.out(1.4)" }, t + i * 0.035);
+});
+// Film strip: slides right→left across the frame for `d` seconds.
+const strip = (s, t, d = 2.4) => { const w = document.querySelector(s).scrollWidth; show(s, t); tl.fromTo(s, { x: 1080 }, { x: -w, duration: d, ease: "none" }, t); hide(s, t + d); };
+// Grid wall: top and bottom halves of past reels close in with torn edges, leaving the speaker in a band.
+const wallIn = (t) => { tl.fromTo("#wt", { opacity: 1, yPercent: -100 }, { yPercent: 0, duration: 0.45, ease: E }, t); tl.fromTo("#wb", { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: 0.45, ease: E }, t); };
+const wallOut = (t) => { tl.to("#wt", { yPercent: -100, duration: 0.35, ease: "power2.in" }, t); tl.to("#wb", { yPercent: 100, duration: 0.35, ease: "power2.in" }, t); };
+// Handwritten note: fades in, then its arrow draws itself.
+const noteIn = (s, t) => {
+  tl.fromTo(s, { opacity: 0, rotation: -4, scale: 0.94 }, { opacity: 1, rotation: -2, scale: 1, duration: 0.3, ease: E }, t);
+  document.querySelector(s).querySelectorAll("path").forEach((p) => { const L = p.getTotalLength(); tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.5, ease: "power1.inOut" }, t + 0.2); });
+};
+// Restyle: toolbar pops, then the sans phrase is swapped for the serif one (the edit reveals itself).
+const restyle = (tb, a, b, t) => {
+  tl.fromTo(tb, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.25, ease: E }, t);
+  show(a, t); hide(a, t + 0.7); line(b, t + 0.7); fadeOut(tb, t + 0.9, 0.2);
+};
+
+// ===== TIMING (replace per video; times from anchors.mjs, entering on the spoken word) =====
+// line("#st1 .ln:nth-child(1)", 0.4); line("#st1 .ln:nth-child(2)", 0.7); … fadeOut("#st1", 4.0);
+// punch(1.22, 6.2); punch(1, 9.0);
+// cardIn("#c1", 1.2); cardOut("#c1", 3.4);
+// noteIn("#n1", 9.6); fadeOut("#n1", 12.0);
+// scatter(".sc", 11.0); fadeOut(".sc", 13.0);
+// strip("#strip1", 15.0, 2.4);
+// wallIn(22.0); wallOut(26.0);
+// restyle("#tb", "#ph-sans", "#ph-serif", 27.0); fadeOut("#ph-serif", 29.0);
+
+window.__timelines = window.__timelines || {};
+window.__timelines["reel"] = tl;
+</script>
+</body></html>

@@ -1,0 +1,549 @@
+<!doctype html>
+<!--
+  MODELO "headline + esquemas" — anúncio real do autor do curso ("Edição Viral com Claude", 1:48).
+  Os tempos (segundos) e os textos dos esquemas são daquele vídeo: reescreva cada bloco para a fala do aluno.
+  Imagens em assets/img/ (troque pelas do aluno): bruto.jpg (gerado do vídeo bruto), editado.jpg, capa.jpg,
+  exemplo1-4.jpg, referencia.jpg, print1-3.png, avatar.png. "seu_usuario" = usuario do perfil.json.
+-->
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Anúncio – headline + esquemas (modelo)</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:"Advercase";src:url("assets/fonts/Advercase-Regular.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Advercase";src:url("assets/fonts/Advercase-Bold.woff2") format("woff2");font-weight:700}
+:root{--safe-l:65px;--safe-r:1015px;--safe-t:270px;--safe-b:1248px;--y:#ffd21f;--cl:#d97757;--mg:#e535e5;--red:#ff453a;--grn:#30d158;--blu:#5ac8fa}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000;font-family:"Advercase",Georgia,serif;color:#fff}
+#reel{position:relative;width:1080px;height:1920px;overflow:hidden}
+#cam{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover}
+.scrim{position:absolute;left:0;top:0;width:1080px;height:780px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.66) 0%,rgba(0,0,0,.5) 50%,rgba(0,0,0,0) 100%)}
+.shadow{text-shadow:0 2px 3px rgba(0,0,0,.55),0 6px 24px rgba(0,0,0,.45)}
+
+/* top zone: y 280..620 (head top ≈ 630–680 on this framing) */
+.beat{position:absolute;left:0;top:280px;width:1080px;height:340px;opacity:0}
+.abs{position:absolute}
+.ui{font-family:Arial,Helvetica,sans-serif}
+.panel{position:absolute;background:rgba(16,16,19,.92);border-radius:22px;border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.ph9{position:absolute;width:160px;height:284px;border-radius:18px;overflow:hidden;background:#111;
+  box-shadow:0 16px 40px rgba(0,0,0,.55),0 0 0 3px rgba(255,255,255,.18)}
+.ph9 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cap9{position:absolute;width:220px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:24px;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.node{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.node.cl{background:var(--cl);color:#fff}
+.star svg{width:62%;height:62%}
+.arw{position:absolute;height:6px;transform-origin:left center;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.9) 0 14px,transparent 14px 24px)}
+.arw::after{content:"";position:absolute;right:-6px;top:-9px;border-left:16px solid rgba(255,255,255,.9);border-top:12px solid transparent;border-bottom:12px solid transparent}
+.dot{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--y);box-shadow:0 0 16px var(--y)}
+.stamp{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.5)}
+.stamp svg{width:62%;height:62%}
+.stamp.x{background:var(--red)} .stamp.v{background:var(--grn)}
+.pill{position:absolute;font-family:Arial,Helvetica,sans-serif;font-weight:700;border-radius:999px;white-space:nowrap}
+.lbl{font-weight:700;font-size:34px;white-space:nowrap}
+.badge{position:absolute;background:var(--y);color:#111;font-weight:700;font-size:42px;padding:10px 24px;border-radius:999px;transform:rotate(-4deg);box-shadow:0 10px 26px rgba(0,0,0,.4);white-space:nowrap}
+.cover{position:absolute;width:186px;height:330px;border-radius:14px;object-fit:cover;box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.14)}
+
+/* B3 waveform */
+.wave{position:absolute;left:30px;top:96px;width:870px;height:160px;display:flex;align-items:center;justify-content:center}
+.seg{position:relative;height:160px;display:flex;align-items:center;gap:4px;overflow:visible;flex:none}
+.seg .in{display:flex;align-items:center;gap:4px;overflow:hidden;width:100%;height:160px}
+.seg i{display:block;flex:none;width:5px;border-radius:3px;background:#e9e9e9}
+.seg .tag{position:absolute;left:50%;top:-30px;font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:18px;padding:4px 10px;border-radius:999px;white-space:nowrap;opacity:0}
+.seg.br .tag{background:var(--blu);color:#062433}
+.seg.st .tag{background:var(--red);color:#fff}
+
+/* B5 manual timeline */
+.mrow{position:absolute;left:52px;height:28px;width:460px}
+.mrow .k{position:absolute;left:-40px;top:4px;font-size:15px;color:#888;font-family:Arial,Helvetica,sans-serif}
+.mclip{position:absolute;top:0;height:28px;border-radius:5px;opacity:.95}
+.kf{position:absolute;width:10px;height:10px;background:var(--y);transform:rotate(45deg);top:9px}
+.prompt{position:absolute;background:#fff;color:#111;border-radius:16px;display:flex;align-items:center;justify-content:space-between;font-family:Arial,Helvetica,sans-serif;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.prompt .go{width:44px;height:44px;border-radius:50%;background:var(--cl);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+
+/* prints of past AI-edited reels */
+.pr{position:absolute;top:0;width:240px;height:345px;border-radius:20px;overflow:hidden;background:#111;
+  box-shadow:0 18px 46px rgba(0,0,0,.55),0 0 0 3px rgba(255,255,255,.18)}
+.pr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pr .vw{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;display:flex;align-items:center;gap:8px;
+  font-weight:700;font-size:32px;font-family:Arial,Helvetica,sans-serif;text-shadow:0 2px 8px rgba(0,0,0,.85);
+  background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.7))}
+.pr .vw svg{width:30px;height:30px;flex:none}
+
+/* comment bar (white CTA mock) + direct */
+.cta{display:flex;align-items:center;justify-content:space-between;width:800px;padding:20px 32px;border-radius:18px;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:40px;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.cta .ph2{color:#999;font-weight:400}
+.cta .on{color:#111;font-weight:800}
+.cta .go{width:56px;height:56px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px}
+.dm{display:flex;align-items:center;gap:18px;margin-top:20px;width:800px;padding:14px 24px;border-radius:18px;background:#141414;font-family:Arial,Helvetica,sans-serif;box-shadow:0 14px 40px rgba(0,0,0,.45),0 0 0 2px rgba(255,255,255,.1)}
+.dm img{width:66px;height:66px;border-radius:50%;object-fit:cover;padding:3px;background:linear-gradient(45deg,#feda75,#d62976,#4f5bd5)}
+.dm .h{font-size:24px;color:#aaa}
+.dm .m{font-size:34px;font-weight:700;margin-top:4px}
+
+/* captions: one word, just under the chin */
+#cap{position:absolute;left:0;top:1205px;width:1080px;height:80px}
+.w{position:absolute;left:0;top:0;width:1080px;text-align:center;font-weight:700;font-size:46px;line-height:80px;
+  -webkit-text-stroke:4px rgba(0,0,0,.8);paint-order:stroke fill;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+</style></head><body>
+<div id="reel" data-composition-id="reel" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+  <video id="cam" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="0" muted playsinline></video>
+  <audio id="voice" src="assets/clean.mp4" data-start="0" data-duration="__DUR__" data-track-index="1" data-volume="1"></audio>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- B1 0–5.4 HEADLINE (no schematic in the first 5 s): "tudo que você está vendo… está sendo editado com IA" -->
+  <div class="beat" id="b1"><div class="shadow" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center">
+    <div id="h1a" style="font-size:92px;line-height:1;font-weight:700;letter-spacing:-1px">Este vídeo foi</div>
+    <div id="h1b" style="position:relative;font-size:124px;line-height:1.05;font-weight:700;letter-spacing:-1px;color:var(--y)">editado por IA
+      <div id="h1u" style="position:absolute;left:4px;right:4px;bottom:-6px;height:10px;border-radius:6px;background:var(--y);transform-origin:left center"></div></div>
+  </div></div>
+
+  <!-- B2 5.6–13.95 "gravei um vídeo → mandei pro Claude → ele editou pra mim" -->
+  <div class="beat" id="b2">
+    <div class="ph9" id="b2-a" style="left:110px;top:0"><img src="assets/img/bruto.jpg" alt="">
+      <div class="pill" style="left:10px;top:10px;background:rgba(0,0,0,.6);color:#fff;font-size:17px;padding:4px 10px"><span style="color:var(--red)">●</span> REC</div></div>
+    <div class="cap9" id="b2-al" style="left:80px;top:292px">bruto · 4:05</div>
+    <div class="arw" id="b2-r1" style="left:300px;top:139px;width:140px"></div>
+    <div class="dot" id="b2-d1" style="left:300px;top:132px;opacity:0"></div>
+    <div class="node cl star" id="b2-n" style="left:465px;top:60px;width:150px;height:150px"></div>
+    <div class="lbl shadow abs" id="b2-nl" style="left:440px;top:226px;width:200px;text-align:center">Claude</div>
+    <div class="arw" id="b2-r2" style="left:640px;top:139px;width:140px"></div>
+    <div class="dot" id="b2-d2" style="left:640px;top:132px;opacity:0"></div>
+    <div class="ph9" id="b2-b" style="left:810px;top:0"><img src="assets/img/editado.jpg" alt=""></div>
+    <div class="cap9" id="b2-bl" style="left:780px;top:292px;color:var(--y)">editado · 1:48</div>
+  </div>
+
+  <!-- B3 14.2–21.75 respirações + gaguejos marcados e cortados -->
+  <div class="beat" id="b3">
+    <div class="panel" style="left:75px;top:6px;width:930px;height:326px">
+      <div class="ui abs" style="left:30px;top:24px;font-size:22px;font-weight:700;color:#aaa;width:400px;height:30px">
+        <span id="b3-h1" style="position:absolute;left:0;top:0">◉ áudio bruto</span>
+        <span id="b3-h2" style="position:absolute;left:0;top:0;color:var(--grn);opacity:0">✓ áudio limpo</span></div>
+      <div class="abs" id="b3-t" style="right:30px;top:12px;font-size:48px;font-weight:700;color:var(--y)">4:05</div>
+      <div class="wave" id="b3-wave"></div>
+      <div class="pill" id="b3-z" style="left:50%;top:272px;background:rgba(48,209,88,.16);border:2px solid var(--grn);color:#fff;font-size:22px;padding:6px 18px;opacity:0">0 respirações · 0 gaguejos</div>
+    </div>
+  </div>
+
+  <!-- B4 22.0–25.6 elementos animados entrando sozinhos, 0 cliques -->
+  <div class="beat" id="b4">
+    <div class="pill" id="e1" style="left:90px;top:22px;background:#1c1c20;border:2px solid var(--mg);font-size:26px;padding:10px 20px">+ título <span style="color:var(--cl);font-size:18px">auto</span></div>
+    <div class="pill" id="e2" style="left:90px;top:98px;background:#1c1c20;border:2px solid var(--y);font-size:26px;padding:10px 20px">+ card <span style="color:var(--cl);font-size:18px">auto</span></div>
+    <div class="pill" id="e3" style="left:90px;top:174px;background:#1c1c20;border:2px solid var(--blu);font-size:26px;padding:10px 20px">+ legenda <span style="color:var(--cl);font-size:18px">auto</span></div>
+    <div class="pill" id="e4" style="left:90px;top:250px;background:#1c1c20;border:2px solid var(--cl);font-size:26px;padding:10px 20px">+ zoom <span style="color:var(--cl);font-size:18px">auto</span></div>
+    <div class="ph9" id="b4-p" style="left:455px;top:20px;width:170px;height:302px">
+      <img id="b4-img" src="assets/img/bruto.jpg" alt="">
+      <div class="abs" id="b4-t" style="left:22px;top:26px;width:126px"><div style="height:16px;background:#fff;border-radius:4px"></div><div style="height:11px;width:80px;margin:6px auto 0;background:var(--y);border-radius:4px"></div></div>
+      <div class="abs" id="b4-c" style="left:14px;top:72px;width:66px;height:46px;border-radius:8px;background:#111;border:2px solid var(--y)"></div>
+      <div class="abs" id="b4-l" style="left:0;top:232px;width:170px;text-align:center;font-weight:700;font-size:20px;-webkit-text-stroke:3px rgba(0,0,0,.8);paint-order:stroke fill">nada</div>
+    </div>
+    <div class="abs" id="b4-k" style="left:690px;top:40px;width:320px;text-align:center">
+      <svg viewBox="0 0 24 24" style="width:70px;height:70px"><path d="M5 2.5v17.2l4.6-4.4 2.9 6.6 3-1.3-2.9-6.5h6.3z" fill="#fff" stroke="#111" stroke-width="1.2"/></svg>
+      <div style="font-size:150px;line-height:.9;font-weight:700;color:var(--y)" class="shadow">0</div>
+      <div class="ui shadow" style="font-size:28px;font-weight:700">cliques seus</div>
+    </div>
+  </div>
+
+  <!-- B5 25.7–32.8 manual (30–40 min, timeline lotada) × IA (10 min, um pedido) -->
+  <div class="beat" id="b5">
+    <div class="panel" id="b5-l" style="left:70px;top:6px;width:545px;height:326px">
+      <div class="lbl abs" style="left:24px;top:16px;font-size:32px">edição manual</div>
+      <div class="abs" id="b5-c1" style="right:24px;top:10px;font-size:44px;font-weight:700">00:00</div>
+      <div id="b5-tl" class="abs" style="left:0;top:70px;width:545px;height:250px"></div>
+      <div class="stamp x" id="b5-x" style="left:212px;top:110px;width:120px;height:120px;opacity:0"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="panel" id="b5-r" style="left:640px;top:6px;width:370px;height:326px;border-color:rgba(217,119,87,.7)">
+      <div class="lbl abs" style="left:24px;top:16px;font-size:32px;color:var(--y)">com IA</div>
+      <div class="abs" id="b5-c2" style="right:24px;top:10px;font-size:44px;font-weight:700;color:var(--y)">00:00</div>
+      <div class="prompt" id="b5-pr" style="left:22px;top:86px;width:326px;height:70px;padding:0 12px 0 20px;font-size:24px"><span style="position:relative;flex:1;height:30px"><span id="b5-ty" style="position:absolute;left:0;top:2px"></span></span><span class="go">↑</span></div>
+      <div class="abs" id="b5-one" style="left:22px;top:186px;width:326px;height:46px;border-radius:8px;background:var(--cl);display:flex;align-items:center;padding-left:14px;font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:20px">vídeo editado</div>
+      <div class="stamp v" id="b5-v" style="left:140px;top:240px;width:76px;height:76px;opacity:0"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+
+  <!-- B6 32.86–39.75 NÃO: sem tempo / não sabe editar  →  SIM: a IA faz -->
+  <div class="beat" id="b6">
+    <div class="panel" id="b6-a" style="left:80px;top:14px;width:420px;height:140px">
+      <svg class="abs" viewBox="0 0 24 24" style="left:26px;top:30px;width:80px;height:80px" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2.2" stroke-linecap="round"/></svg>
+      <div class="lbl abs" style="left:126px;top:46px;font-size:40px">sem tempo</div>
+      <div class="stamp x" id="b6-x1" style="right:-22px;top:-18px;width:64px;height:64px"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="panel" id="b6-b" style="left:80px;top:180px;width:420px;height:140px">
+      <div class="abs" style="left:24px;top:30px;width:84px;height:80px">
+        <div style="height:16px;width:70px;background:#4a7dff;border-radius:4px;margin-bottom:6px"></div><div style="height:16px;width:50px;background:var(--mg);border-radius:4px;margin:0 0 6px 20px"></div><div style="height:16px;width:76px;background:var(--grn);border-radius:4px"></div>
+        <div class="abs" style="left:30px;top:6px;font-size:58px;font-weight:700;color:#fff;text-shadow:0 2px 10px #000">?</div></div>
+      <div class="lbl abs" style="left:126px;top:46px;font-size:40px">não sabe editar</div>
+      <div class="stamp x" id="b6-x2" style="right:-22px;top:-18px;width:64px;height:64px"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="arw" id="b6-ar" style="left:526px;top:164px;width:90px"></div>
+    <div class="panel" id="b6-c" style="left:640px;top:14px;width:360px;height:306px;border-color:rgba(48,209,88,.7)">
+      <div class="node cl star" style="left:110px;top:34px;width:140px;height:140px"></div>
+      <div class="lbl abs" style="left:0;top:200px;width:360px;text-align:center;font-size:44px">a IA faz</div>
+      <div class="stamp v" id="b6-v" style="right:-22px;top:-18px;width:76px;height:76px"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+
+  <!-- B7 40.0–46.5 eu critiquei ("IA editando vídeo? duvido") → testei ✓ -->
+  <div class="beat" id="b7">
+    <div class="abs" id="b7-a" style="left:80px;top:40px;width:520px">
+      <div style="display:flex;align-items:flex-end;gap:16px">
+        <img src="assets/img/avatar.png" alt="" style="width:84px;height:84px;border-radius:50%;object-fit:cover;padding:3px;background:linear-gradient(45deg,#feda75,#d62976,#4f5bd5);flex:none">
+        <div class="ui" style="background:#26262b;border-radius:26px 26px 26px 6px;padding:22px 28px;font-size:34px;font-weight:700;box-shadow:0 14px 40px rgba(0,0,0,.5)">IA editando vídeo?<br><span style="color:#aaa">Duvido.</span></div>
+      </div>
+      <div class="ui shadow" style="margin:14px 0 0 100px;font-size:24px;color:#ccc;font-weight:700">eu, antes de testar</div>
+      <div class="pill" id="b7-dn" style="left:400px;top:-26px;background:var(--red);color:#fff;font-size:24px;padding:8px 16px;transform:rotate(6deg)">👎 critiquei</div>
+    </div>
+    <div class="ph9" id="b7-b" style="left:760px;top:10px;width:170px;height:302px"><img src="assets/img/editado.jpg" alt="">
+      <div class="abs" style="left:0;bottom:0;width:100%;padding:8px;background:rgba(0,0,0,.65);font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:19px;text-align:center">▶ teste 1</div></div>
+    <div class="stamp v" id="b7-v" style="left:890px;top:-6px;width:96px;height:96px;opacity:0"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+
+  <!-- B8 46.64–54.42 NÃO: "edita meu vídeo" → genérico   SIM: preset detalhado → do meu jeito -->
+  <div class="beat" id="b8">
+    <div class="panel" id="b8-a" style="left:70px;top:6px;width:420px;height:326px">
+      <div class="ui abs" style="left:22px;top:18px;font-size:20px;color:#999;font-weight:700">pedido genérico</div>
+      <div class="prompt" style="left:22px;top:52px;width:376px;height:62px;padding:0 10px 0 18px;font-size:24px"><span id="b8-ty" style="flex:1"></span><span class="go">↑</span></div>
+      <img src="assets/img/bruto.jpg" alt="" style="position:absolute;left:22px;top:130px;width:104px;height:180px;object-fit:cover;border-radius:10px;filter:grayscale(.6) brightness(.8)">
+      <div class="ui abs" style="left:146px;top:180px;font-size:28px;font-weight:700;color:#aaa">resultado<br>genérico</div>
+      <div class="stamp x" id="b8-x" style="left:300px;top:164px;width:88px;height:88px;opacity:0"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="panel" id="b8-b" style="left:512px;top:6px;width:498px;height:326px;border-color:rgba(217,119,87,.7)">
+      <div class="ui abs" style="left:22px;top:16px;font-size:24px;font-weight:700;color:var(--cl);display:flex;align-items:center;gap:10px">
+        <svg viewBox="0 0 24 24" style="width:28px;height:28px" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2.5h8l4.5 4.5v14.5H6z"/><path d="M14 2.5V7h4.5"/></svg>meu-preset.md</div>
+      <div class="ui abs" style="left:24px;top:66px;font-size:25px;line-height:1.75;font-weight:700">
+        <div id="q1"><span style="color:var(--y)">•</span> cortar pausas e gaguejos</div>
+        <div id="q2"><span style="color:var(--y)">•</span> legenda palavra por palavra</div>
+        <div id="q3"><span style="color:var(--y)">•</span> cards acima da cabeça</div>
+        <div id="q4"><span style="color:var(--y)">•</span> fonte e cores do meu perfil</div></div>
+      <div class="stamp v" id="b8-v" style="right:20px;top:-14px;width:84px;height:84px;opacity:0"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+
+  <!-- B9 54.52–63.3 presets: Reels, Anúncios, Vídeos + Colagens (frames reais) -->
+  <div class="beat" id="b9">
+    <div class="ph9 slot" id="sl1" style="left:145px;top:26px;background:transparent;box-shadow:none;border:3px dashed rgba(255,255,255,.55)"></div>
+    <div class="ph9 slot" id="sl2" style="left:355px;top:26px;background:transparent;box-shadow:none;border:3px dashed rgba(255,255,255,.55)"></div>
+    <div class="ph9 slot" id="sl3" style="left:565px;top:26px;background:transparent;box-shadow:none;border:3px dashed rgba(255,255,255,.55)"></div>
+    <div class="ph9 slot" id="sl4" style="left:775px;top:26px;background:transparent;box-shadow:none;border:3px dashed rgba(255,255,255,.55)"></div>
+    <div class="ph9" id="pp1" style="left:145px;top:26px"><img src="assets/img/exemplo1.jpg" alt=""></div>
+    <div class="ph9" id="pp2" style="left:355px;top:26px"><img src="assets/img/exemplo2.jpg" alt=""></div>
+    <div class="ph9" id="pp3" style="left:565px;top:26px"><img src="assets/img/exemplo3.jpg" alt=""></div>
+    <div class="ph9" id="pp4" style="left:775px;top:26px"><img src="assets/img/exemplo4.jpg" alt=""></div>
+    <div class="pill" id="pl1" style="left:225px;top:2px;background:var(--y);color:#111;font-size:24px;padding:6px 16px">Reels</div>
+    <div class="pill" id="pl2" style="left:435px;top:2px;background:var(--y);color:#111;font-size:24px;padding:6px 16px">Anúncios</div>
+    <div class="pill" id="pl3" style="left:645px;top:2px;background:var(--y);color:#111;font-size:24px;padding:6px 16px">Vídeos</div>
+    <div class="pill" id="pl4" style="left:855px;top:2px;background:var(--mg);color:#fff;font-size:24px;padding:6px 16px">+ Colagens</div>
+  </div>
+
+  <!-- B10 63.44–70.85 curso express: os presets entram na capa → milhões de views -->
+  <div class="beat" id="b10">
+    <img class="cover" id="cv1" src="assets/img/capa.jpg" alt="" style="left:90px;top:5px">
+    <div class="pill" id="b10-k" style="left:183px;top:292px;background:var(--y);color:#111;font-size:24px;padding:6px 16px">curso express</div>
+    <div class="pill" id="k1" style="left:330px;top:22px;background:#1c1c20;border:2px solid rgba(255,255,255,.2);font-size:26px;padding:6px 18px 6px 6px;display:flex;align-items:center;gap:12px"><img src="assets/img/exemplo1.jpg" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:6px">Reels</div>
+    <div class="pill" id="k2" style="left:600px;top:22px;background:#1c1c20;border:2px solid rgba(255,255,255,.2);font-size:26px;padding:6px 18px 6px 6px;display:flex;align-items:center;gap:12px"><img src="assets/img/exemplo2.jpg" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:6px">Anúncios</div>
+    <div class="pill" id="k3" style="left:330px;top:96px;background:#1c1c20;border:2px solid rgba(255,255,255,.2);font-size:26px;padding:6px 18px 6px 6px;display:flex;align-items:center;gap:12px"><img src="assets/img/exemplo3.jpg" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:6px">Vídeos</div>
+    <div class="pill" id="k4" style="left:600px;top:96px;background:#1c1c20;border:2px solid rgba(255,255,255,.2);font-size:26px;padding:6px 18px 6px 6px;display:flex;align-items:center;gap:12px"><img src="assets/img/exemplo4.jpg" alt="" style="width:34px;height:50px;object-fit:cover;border-radius:6px">Colagens</div>
+    <div class="panel" id="b10-g" style="left:320px;top:176px;width:690px;height:150px">
+      <svg viewBox="0 0 690 150" style="position:absolute;inset:0;width:690px;height:150px">
+        <defs><linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd21f" stop-opacity=".45"/><stop offset="1" stop-color="#ffd21f" stop-opacity="0"/></linearGradient></defs>
+        <path id="b10-area" d="M20 132 L120 126 L210 118 L300 104 L380 96 L450 72 L520 58 L590 30 L640 18 L640 140 L20 140Z" fill="url(#gf)"/>
+        <path id="b10-line" d="M20 132 L120 126 L210 118 L300 104 L380 96 L450 72 L520 58 L590 30 L640 18" fill="none" stroke="#ffd21f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle id="b10-dot" cx="640" cy="18" r="11" fill="#ffd21f"/></svg>
+      <div class="abs ui" style="left:24px;top:16px;font-size:26px;font-weight:700;display:flex;align-items:center;gap:10px"><svg viewBox="0 0 24 24" style="width:30px;height:30px" fill="none" stroke="#fff" stroke-width="2.4"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.4"/></svg>milhões de views</div>
+    </div>
+  </div>
+
+  <!-- B11 70.9–80.3 "esses vídeos que você está vendo aqui… +1 milhão de views orgânicas" — prints -->
+  <div class="beat" id="b11">
+    <div class="pr" id="r1" style="left:92px"><img src="assets/img/print1.png" alt="">
+      <div class="vw"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.4"/></svg><span id="n1">0</span></div></div>
+    <div class="pr" id="r2" style="left:420px"><img src="assets/img/print2.png" alt="">
+      <div class="vw"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.4"/></svg><span id="n2">0</span></div></div>
+    <div class="pr" id="r3" style="left:748px"><img src="assets/img/print3.png" alt="">
+      <div class="vw"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.4"/></svg><span id="n3">0</span></div></div>
+    <div class="badge" id="b11-b" style="left:50%;top:140px;margin-left:-290px">+1 milhão de views orgânicas</div>
+    <div class="badge" id="b11-c" style="left:50%;top:140px;margin-left:-250px;background:#fff">todos editados com IA</div>
+  </div>
+
+  <!-- B12 80.44–90.95 referência → Claude copia o estilo → seu vídeo igual -->
+  <div class="beat" id="b12">
+    <div class="ph9" id="b12-a" style="left:110px;top:0"><img src="assets/img/referencia.jpg" alt=""></div>
+    <div class="cap9" id="b12-al" style="left:80px;top:292px">referência</div>
+    <div class="arw" id="b12-r1" style="left:300px;top:139px;width:140px"></div>
+    <div class="node cl star" id="b12-n" style="left:465px;top:60px;width:150px;height:150px"></div>
+    <div class="arw" id="b12-r2" style="left:640px;top:139px;width:140px"></div>
+    <div class="ph9" id="b12-b" style="left:810px;top:0"><img src="assets/img/bruto.jpg" alt="">
+      <div class="abs" id="b12-st" style="inset:0;opacity:0">
+        <div class="abs" style="left:0;top:0;width:100%;height:120px;background:linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,0))"></div>
+        <div class="abs" style="left:0;top:22px;width:100%;text-align:center;font-family:Georgia,serif;font-size:19px;line-height:1.1;color:#fff">o que eu tenho que<br><i style="color:#f3e7a1;font-size:23px">responder?</i></div>
+      </div></div>
+    <div class="cap9" id="b12-bl" style="left:780px;top:292px">seu vídeo</div>
+    <div class="pill" id="b12-eq" style="left:540px;top:244px;background:var(--grn);color:#062b12;font-size:26px;padding:8px 20px">= mesmo estilo</div>
+  </div>
+
+  <!-- B13 91.1–102.2 capa + lançamento/desconto → posta o 1º vídeo editado -->
+  <div class="beat" id="b13">
+    <img class="cover" id="cv2" src="assets/img/capa.jpg" alt="" style="left:90px;top:5px">
+    <div class="abs" id="b13-a" style="left:330px;top:0;width:680px;height:340px">
+      <div class="abs" id="b13-tag" style="left:20px;top:46px;height:128px;width:560px;background:var(--y);color:#111;border-radius:16px 64px 64px 16px;display:flex;align-items:center;padding-left:60px;font-size:70px;font-weight:700;box-shadow:0 14px 40px rgba(0,0,0,.45)">
+        <span class="abs" style="left:22px;top:52px;width:24px;height:24px;border-radius:50%;background:#111;opacity:.85"></span>lançamento</div>
+      <div class="abs" id="b13-st" style="left:110px;top:200px;border:5px solid var(--red);color:var(--red);background:rgba(0,0,0,.55);border-radius:14px;padding:8px 22px;font-size:46px;font-weight:700;transform:rotate(-5deg);white-space:nowrap">desconto especialzíssimo</div>
+    </div>
+    <div class="panel" id="b13-b" style="left:330px;top:6px;width:680px;height:326px;opacity:0">
+      <img src="assets/img/editado.jpg" alt="" style="position:absolute;left:20px;top:18px;width:164px;height:290px;object-fit:cover;border-radius:12px">
+      <div class="ui abs" style="left:210px;top:30px;display:flex;align-items:center;gap:14px;font-size:26px;font-weight:700">
+        <span style="width:58px;height:58px;border-radius:50%;border:3px dashed var(--y);display:block"></span>seu.perfil</div>
+      <div class="lbl abs" style="left:210px;top:118px;font-size:44px">1º vídeo editado</div>
+      <div class="abs" style="left:210px;top:200px;width:430px;height:16px;border-radius:8px;background:#333;overflow:hidden"><div id="b13-bar" style="width:100%;height:100%;background:var(--grn);transform-origin:left center"></div></div>
+      <div class="ui abs" id="b13-ok" style="left:210px;top:240px;font-size:30px;font-weight:700;color:var(--grn)">✓ publicado</div>
+    </div>
+  </div>
+
+  <!-- B14 102.34–106.1 grava → edita → posta -->
+  <div class="beat" id="b14">
+    <div class="node" id="t1" style="left:150px;top:30px;width:150px;height:150px;background:#1c1c20;border:3px solid rgba(255,255,255,.25)">
+      <div style="width:84px;height:84px;border-radius:50%;border:6px solid #fff;display:flex;align-items:center;justify-content:center"><div style="width:52px;height:52px;border-radius:50%;background:var(--red)"></div></div></div>
+    <div class="lbl shadow abs" id="t1l" style="left:125px;top:200px;width:200px;text-align:center;font-size:44px">grava</div>
+    <div class="arw" id="t-r1" style="left:325px;top:102px;width:110px"></div>
+    <div class="node cl star" id="t2" style="left:465px;top:30px;width:150px;height:150px"></div>
+    <div class="lbl shadow abs" id="t2l" style="left:440px;top:200px;width:200px;text-align:center;font-size:44px">edita</div>
+    <div class="arw" id="t-r2" style="left:645px;top:102px;width:110px"></div>
+    <div class="node" id="t3" style="left:780px;top:30px;width:150px;height:150px;background:linear-gradient(45deg,#feda75,#d62976,#4f5bd5)">
+      <svg viewBox="0 0 24 24" style="width:76px;height:76px" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M21.5 2.5 10.6 13.4M21.5 2.5l-7 19-3.9-8.1-8.1-3.9z"/></svg></div>
+    <div class="lbl shadow abs" id="t3l" style="left:755px;top:200px;width:200px;text-align:center;font-size:44px">posta</div>
+  </div>
+
+  <!-- B15 106.22–end "digita EU QUERO aqui que eu mando no seu direct" -->
+  <div class="beat" id="b15"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%">
+    <div class="cta" id="b15-c"><span style="position:relative;flex:1;text-align:left"><span class="ph2" id="b15-ph">Adicione um comentário…</span><span class="on" id="b15-t" style="position:absolute;left:0;top:0"></span></span><span class="go">↑</span></div>
+    <div class="dm" id="b15-dm"><img src="assets/img/avatar.png" alt=""><div style="text-align:left"><div class="h">seu_usuario · direct</div><div class="m">Aqui está o seu link</div></div></div>
+  </div></div>
+
+  <div id="cap">__CAPTIONS__</div>
+</div>
+<script>
+const DUR = __DUR__;
+// ---- deterministic build of repeated decoration (no randomness at render time)
+let seed = 1642;
+const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+const STAR = '<svg viewBox="-12 -12 24 24">' + [0, 1, 2, 3, 4, 5, 6, 7].map((i) => `<line x1="0" y1="-2.5" x2="0" y2="-10.5" transform="rotate(${i * 45 + (i % 2) * 8})" stroke="currentColor" stroke-width="${i % 2 ? 2.2 : 2.9}" stroke-linecap="round"/>`).join("") + "</svg>";
+document.querySelectorAll(".star").forEach((el) => { el.innerHTML = STAR; });
+// B3 waveform: speech / breath / stutter blocks
+const segs = [["sp", 150], ["br", 74], ["sp", 120], ["st", 96], ["sp", 140], ["br", 64], ["sp", 104], ["st", 84], ["sp", 60]];
+document.querySelector("#b3-wave").innerHTML = segs.map(([k, w]) => {
+  const n = Math.floor(w / 9), bars = Array.from({ length: n }, () => {
+    const h = k === "sp" ? 34 + rnd() * 120 : k === "br" ? 10 + rnd() * 26 : 40 + rnd() * 90;
+    return `<i style="height:${Math.round(h)}px"></i>`; }).join("");
+  const tag = k === "br" ? '<span class="tag">respiração</span>' : k === "st" ? '<span class="tag">gaguejo</span>' : "";
+  return `<div class="seg ${k}" style="width:${w}px">${tag}<div class="in">${bars}</div></div>`; }).join("");
+// B5 manual timeline: 6 dense tracks + keyframes
+const cols = ["#4a7dff", "#a259ff", "#30d158", "#ff9f0a", "#e535e5", "#5ac8fa"];
+document.querySelector("#b5-tl").innerHTML = ["V3", "V2", "V1", "A1", "A2", "FX"].map((k, r) => {
+  let x = 0, html = "";
+  while (x < 440) { const w = 26 + Math.round(rnd() * 70); html += `<div class="mclip mc" style="left:${x}px;width:${Math.min(w, 460 - x)}px;background:${cols[(r + Math.floor(rnd() * 3)) % 6]}"></div>`;
+    if (rnd() > .45) html += `<div class="kf mc" style="left:${x + 8 + Math.round(rnd() * (w - 16))}px"></div>`; x += w + 4 + Math.round(rnd() * 8); }
+  return `<div class="mrow" style="top:${r * 38 + 12}px"><span class="k">${k}</span>${html}</div>`; }).join("");
+
+gsap.set("#b3-z, #pl1, #pl2, #pl3, #pl4, #b10-k, #b12-eq", { xPercent: -50 });
+const tl = gsap.timeline({ paused: true });
+
+// ---- captions: static clip per word (built in build-index.mjs); just a small settle on entry
+document.querySelectorAll("#cap .w").forEach((el) => {
+  tl.fromTo(el, { scale: 1.08 }, { scale: 1, duration: 0.14, ease: "power2.out" }, +el.dataset.start);
+});
+
+const inn = (sel, t, v = {}) => tl.fromTo(sel, { opacity: 0, y: v.y ?? 26 }, { opacity: 1, y: 0, duration: v.d ?? 0.5, ease: v.ease ?? "power3.out" }, t);
+const show = (sel, t) => tl.set(sel, { opacity: 1 }, t);
+const out = (sel, t) => { tl.to(sel, { opacity: 0, duration: 0.28, ease: "power1.in" }, t); tl.set(sel, { opacity: 0 }, t + 0.28); };
+const sub = (sel, t, y = 18) => tl.from(sel, { opacity: 0, y, duration: 0.45, ease: "power2.out" }, t);
+const rise = (sel, t, rot = 0) => tl.from(sel, { opacity: 0, y: 40, rotation: rot, duration: 0.55, ease: "expo.out" }, t);
+const pop = (sel, t, rot = 0) => tl.fromTo(sel, { opacity: 0, scale: 0.3, rotation: rot - 14 }, { opacity: 1, scale: 1, rotation: rot, duration: 0.42, ease: "back.out(2.4)" }, t);
+const grow = (sel, t, d = 0.4) => tl.from(sel, { scaleX: 0, duration: d, ease: "power2.out" }, t);
+const travel = (sel, t, dx, d = 0.55) => { tl.set(sel, { opacity: 1, x: 0 }, t); tl.to(sel, { x: dx, duration: d, ease: "power1.inOut" }, t); tl.to(sel, { opacity: 0, duration: 0.15 }, t + d); tl.set(sel, { opacity: 0 }, t + d + 0.15); };
+const count = (el, from, to, t, d, fmt = (v) => Math.round(v)) => {
+  const o = { v: from }, node = document.querySelector(el);
+  tl.fromTo(o, { v: from }, { v: to, duration: d, ease: "power2.out", onUpdate: () => { node.textContent = fmt(o.v); } }, t);
+};
+const type = (el, s, t, d) => { const o = { n: 0 }, node = document.querySelector(el);
+  tl.fromTo(o, { n: 0 }, { n: s.length, duration: d, ease: "none", onUpdate: () => { node.textContent = s.slice(0, Math.round(o.n)); } }, t); };
+const mmss = (v) => { const s = Math.round(v); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+const mss = (v) => { const s = Math.round(v); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+
+tl.fromTo("#scrim", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0);
+
+// B1 0.05 – 5.35  headline
+show("#b1", 0.05);
+tl.from("#h1a", { opacity: 0, y: 30, duration: 0.5, ease: "expo.out" }, 0.05);
+tl.from("#h1b", { opacity: 0, y: 30, scale: 0.9, duration: 0.55, ease: "expo.out" }, 0.3);
+tl.fromTo("#h1u", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power2.out" }, 3.14);
+tl.to("#h1b", { scale: 1.06, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }, 4.38);
+out("#b1", 5.35);
+
+// B2 5.6 – 13.95  bruto → Claude → editado
+show("#b2", 5.6);
+rise("#b2-a", 5.7, -5); sub("#b2-al", 6.0);
+tl.to("#b2-a", { scale: 1.05, duration: 0.18, yoyo: true, repeat: 1 }, 6.64);
+grow("#b2-r1", 8.02); travel("#b2-d1", 8.2, 130);
+pop("#b2-n", 9.7); sub("#b2-nl", 9.9);
+tl.to("#b2-n", { rotation: 360, duration: 2.4, ease: "power1.inOut" }, 10.4);
+grow("#b2-r2", 11.16); travel("#b2-d2", 11.3, 130);
+rise("#b2-b", 11.6, 5); sub("#b2-bl", 11.9);
+tl.to("#b2-b", { scale: 1.07, duration: 0.2, yoyo: true, repeat: 1 }, 12.82);
+out("#b2", 13.95);
+
+// B3 14.2 – 21.75  respirações (azul) e gaguejos (vermelho) cortados
+show("#b3", 14.2);
+tl.from("#b3 .panel", { opacity: 0, y: 26, duration: 0.4, ease: "power3.out" }, 14.2);
+tl.from("#b3-wave .seg i", { scaleY: 0, duration: 0.3, stagger: 0.004, ease: "power2.out" }, 14.25);
+tl.to("#b3-wave .br i", { backgroundColor: "#5ac8fa", duration: 0.3 }, 14.82);
+tl.fromTo("#b3-wave .br .tag", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.12 }, 14.82);
+tl.to("#b3-wave .st i", { backgroundColor: "#ff453a", duration: 0.3 }, 16.26);
+tl.fromTo("#b3-wave .st .tag", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.12 }, 16.26);
+tl.to("#b3-wave .br, #b3-wave .st", { width: 0, opacity: 0, duration: 0.7, ease: "power2.inOut" }, 17.1);
+count("#b3-t", 245, 108, 17.1, 0.9, mss);
+tl.to("#b3-h1", { opacity: 0, duration: 0.2 }, 18.06); tl.set("#b3-h1", { opacity: 0 }, 18.26);
+tl.fromTo("#b3-h2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 18.1);
+tl.to("#b3-wave .sp i", { backgroundColor: "#30d158", duration: 0.4 }, 18.28);
+pop("#b3-z", 19.98);
+out("#b3", 21.75);
+
+// B4 22.0 – 25.6  elementos entram sozinhos, 0 cliques
+show("#b4", 22.0);
+rise("#b4-p", 22.0);
+pop("#e1", 22.54); tl.from("#b4-t", { opacity: 0, y: -14, duration: 0.35, ease: "back.out(2)" }, 22.6);
+pop("#e2", 23.2); tl.from("#b4-c", { opacity: 0, scale: 0.4, duration: 0.35, ease: "back.out(2)" }, 23.25);
+pop("#e3", 23.78); tl.from("#b4-l", { opacity: 0, scale: 1.4, duration: 0.25 }, 23.82);
+pop("#e4", 24.2); tl.to("#b4-img", { scale: 1.14, duration: 0.6, ease: "power2.out" }, 24.24);
+tl.from("#b4-k", { opacity: 0, scale: 0.6, duration: 0.45, ease: "back.out(2)" }, 24.52);
+out("#b4", 25.58);
+
+// B5 25.72 – 32.78  manual lotado × IA simples
+show("#b5", 25.72);
+tl.from("#b5-l", { opacity: 0, x: -30, duration: 0.45, ease: "expo.out" }, 25.72);
+tl.from("#b5-tl .mc", { opacity: 0, scale: 0.4, duration: 0.18, stagger: 0.035, ease: "power2.out" }, 25.9);
+count("#b5-c1", 0, 2400, 26.66, 2.4, mmss);
+pop("#b5-x", 29.4);
+tl.to("#b5-l", { opacity: 0.55, duration: 0.4 }, 29.8);
+tl.from("#b5-r", { opacity: 0, x: 30, duration: 0.45, ease: "expo.out" }, 29.88);
+type("#b5-ty", "edita no meu estilo", 30.1, 0.6);
+tl.to("#b5-pr", { scale: 1.05, duration: 0.14, yoyo: true, repeat: 1 }, 30.75);
+grow("#b5-one", 31.0, 0.5);
+count("#b5-c2", 0, 600, 30.8, 0.8, mmss);
+tl.fromTo("#b5-c2", { scale: 1.3 }, { scale: 1, duration: 0.35, ease: "back.out(2)" }, 31.6);
+pop("#b5-v", 31.9);
+out("#b5", 32.75);
+
+// B6 32.86 – 39.75  NÃO × SIM
+show("#b6", 32.86);
+rise("#b6-a", 32.9); pop("#b6-x1", 33.74);
+rise("#b6-b", 34.6); pop("#b6-x2", 35.14);
+grow("#b6-ar", 36.24, 0.35);
+tl.from("#b6-c", { opacity: 0, scale: 0.85, duration: 0.5, ease: "back.out(1.8)" }, 36.4);
+tl.to("#b6-c .node", { rotation: 360, duration: 2.0, ease: "power1.inOut" }, 37.0);
+pop("#b6-v", 38.52);
+out("#b6", 39.75);
+
+// B7 40.0 – 46.5  eu duvidava → testei
+show("#b7", 40.0);
+tl.from("#b7-a", { opacity: 0, y: 24, duration: 0.5, ease: "power3.out" }, 41.0);
+pop("#b7-dn", 43.52, 6);
+rise("#b7-b", 45.3, 4);
+pop("#b7-v", 45.7);
+out("#b7", 46.5);
+
+// B8 46.64 – 54.42  genérico ✕ × preset detalhado ✓
+show("#b8", 46.64);
+rise("#b8-a", 46.64);
+type("#b8-ty", "edita meu vídeo", 47.0, 0.6);
+tl.from("#b8-b", { opacity: 0, x: 30, duration: 0.5, ease: "expo.out" }, 48.76);
+pop("#b8-x", 51.2);
+tl.to("#b8-a", { opacity: 0.6, duration: 0.4 }, 51.6);
+sub("#q1", 52.06); sub("#q2", 52.64); sub("#q3", 53.2); sub("#q4", 53.76);
+pop("#b8-v", 54.1);
+out("#b8", 54.42);
+
+// B9 54.52 – 63.3  presets (vagas tracejadas → frames reais)
+show("#b9", 54.52);
+tl.from("#sl1, #sl2, #sl3", { opacity: 0, y: 20, duration: 0.35, stagger: 0.12, ease: "power2.out" }, 55.44);
+tl.from("#sl4", { opacity: 0, y: 20, duration: 0.35, ease: "power2.out" }, 59.5);
+tl.set("#pp1, #pp2, #pp3, #pp4, #pl1, #pl2, #pl3, #pl4", { opacity: 0 }, 54.52);
+const fill = (img, lab, t, rot) => { tl.fromTo(img, { opacity: 0, scale: 0.7, rotation: rot * 2 }, { opacity: 1, scale: 1, rotation: rot, duration: 0.45, ease: "back.out(1.8)" }, t);
+  tl.fromTo(lab, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 }, t + 0.1); };
+fill("#pp1", "#pl1", 57.22, -3); fill("#pp2", "#pl2", 58.3, 2); fill("#pp3", "#pl3", 59.22, -2); fill("#pp4", "#pl4", 60.48, 3);
+out("#b9", 63.28);
+
+// B10 63.44 – 70.85  presets entram no curso → milhões de views
+show("#b10", 63.44);
+rise("#cv1", 63.44, -5);
+pop("#b10-k", 64.04, -3);
+tl.from("#k1, #k2, #k3, #k4", { opacity: 0, x: 40, duration: 0.35, stagger: 0.14, ease: "expo.out" }, 66.68);
+tl.to("#k1, #k2, #k3, #k4", { x: -300, y: 60, scale: 0.3, opacity: 0, duration: 0.5, stagger: 0.08, ease: "power2.in" }, 68.0);
+tl.to("#cv1", { scale: 1.06, duration: 0.18, yoyo: true, repeat: 1 }, 68.5);
+tl.from("#b10-g", { opacity: 0, y: 20, duration: 0.4, ease: "power3.out" }, 69.1);
+tl.fromTo("#b10-line", { strokeDasharray: 700, strokeDashoffset: 700 }, { strokeDashoffset: 0, duration: 1.0, ease: "power2.out" }, 69.3);
+tl.from("#b10-area", { opacity: 0, duration: 0.8 }, 69.5);
+tl.from("#b10-dot", { opacity: 0, scale: 0, transformOrigin: "50% 50%", duration: 0.3, ease: "back.out(3)" }, 70.2);
+out("#b10", 70.85);
+
+// B11 71.0 – 80.3  prints dos vídeos editados com IA
+show("#b11", 71.0);
+tl.from("#r1", { opacity: 0, y: 50, rotation: -6, duration: 0.6, ease: "expo.out" }, 71.1);
+tl.from("#r2", { opacity: 0, y: 50, duration: 0.6, ease: "expo.out" }, 71.55);
+tl.from("#r3", { opacity: 0, y: 50, rotation: 6, duration: 0.6, ease: "expo.out" }, 72.0);
+const mil = (v) => Math.round(v) + " mil";
+count("#n1", 0, 262, 72.36, 1.2, mil);
+count("#n2", 0, 312, 72.66, 1.2, mil);
+count("#n3", 0, 793, 72.96, 1.5, mil);
+tl.to("#r3", { scale: 1.06, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }, 74.46);
+tl.set("#b11-b, #b11-c", { opacity: 0 }, 71.0);
+pop("#b11-b", 74.3, -3);
+out("#b11-b", 76.9);
+pop("#b11-c", 77.04, 3);
+out("#b11", 80.3);
+
+// B12 80.44 – 90.95  referência → Claude → seu vídeo no mesmo estilo
+show("#b12", 80.44);
+rise("#b12-a", 80.94, -4); sub("#b12-al", 81.2);
+grow("#b12-r1", 83.56);
+pop("#b12-n", 83.84);
+tl.to("#b12-n", { rotation: 360, duration: 2.2, ease: "power1.inOut" }, 84.3);
+grow("#b12-r2", 85.1);
+rise("#b12-b", 85.34, 4); sub("#b12-bl", 85.6);
+tl.to("#b12-st", { opacity: 1, duration: 0.4 }, 87.24);
+tl.to("#b12-b", { scale: 1.07, duration: 0.2, yoyo: true, repeat: 1 }, 87.3);
+tl.set("#b12-eq", { opacity: 0 }, 80.44);
+pop("#b12-eq", 87.6, -2);
+out("#b12", 90.95);
+
+// B13 91.1 – 102.2  capa + lançamento/desconto → posta o 1º vídeo
+show("#b13", 91.1);
+rise("#cv2", 91.1, -5);
+tl.from("#b13-tag", { opacity: 0, x: 60, rotation: 4, duration: 0.5, ease: "back.out(1.6)" }, 93.04);
+tl.fromTo("#b13-st", { opacity: 0, scale: 1.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.in" }, 95.04);
+out("#b13-a", 96.4);
+tl.fromTo("#b13-b", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 96.6);
+tl.to("#cv2", { scale: 1.06, duration: 0.2, yoyo: true, repeat: 1 }, 98.18);
+tl.fromTo("#b13-bar", { scaleX: 0 }, { scaleX: 1, duration: 1.3, ease: "power1.inOut" }, 100.1);
+tl.fromTo("#b13-ok", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 101.45);
+out("#b13", 102.2);
+
+// B14 102.34 – 106.1  grava → edita → posta
+show("#b14", 102.34);
+tl.set("#t1, #t1l, #t2, #t2l, #t3, #t3l", { opacity: 0 }, 102.34);
+tl.set("#t-r1, #t-r2", { scaleX: 0 }, 102.34);
+pop("#t1", 103.2); sub("#t1l", 103.3);
+grow("#t-r1", 103.8, 0.3); pop("#t2", 104.1); sub("#t2l", 104.14);
+tl.to("#t2", { rotation: 360, duration: 1.0, ease: "power1.inOut" }, 104.4);
+grow("#t-r2", 105.0, 0.3); pop("#t3", 105.3); sub("#t3l", 105.32);
+out("#b14", 106.08);
+
+// B15 106.2 – end  CTA
+inn("#b15", 106.2, { d: 0.35 });
+tl.set("#b15-ph", { opacity: 0 }, 106.4);
+type("#b15-t", "EU QUERO", 106.44, 0.35);
+tl.to("#b15-c", { scale: 1.05, duration: 0.15, yoyo: true, repeat: 1 }, 106.85);
+tl.from("#b15-dm", { opacity: 0, y: -20, duration: 0.4, ease: "expo.out" }, 107.15);
+
+window.__timelines = window.__timelines || {};
+window.__timelines["reel"] = tl;
+</script>
+</body></html>

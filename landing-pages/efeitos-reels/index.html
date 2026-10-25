@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reels com Efeito de Cinema</title>
+<meta name="description" content="35 efeitos de Reels que o Claude Code monta sozinho a partir de uma frase. Prompts prontos para copiar, catálogo completo e o método para usar no gancho certo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0c0d0b; --ink-2:#141612; --ink-3:#1d201a; --line:#2a2e25;
+  --paper:#f2efe6; --muted:#9a9b8f; --acid:#d4ff3a; --acid-ink:#1a2200;
+  --hot:#ff5a36; --radius:18px;
+  --display:"Unbounded",sans-serif; --body:"Instrument Sans",sans-serif; --mono:"JetBrains Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--paper);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.tc{color:var(--acid)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(12,13,11,.72);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--display);font-weight:900;font-size:18px;letter-spacing:-.02em;text-decoration:none}
+.logo span{color:var(--acid)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{text-decoration:none;font-size:15px;color:var(--muted)}
+.nav-links a:hover{color:var(--paper)}
+.btn{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:16px;text-decoration:none;border-radius:999px;padding:14px 26px;border:0;cursor:pointer;transition:transform .2s,background .2s,box-shadow .2s}
+.btn-acid{background:var(--acid);color:var(--acid-ink);box-shadow:0 0 0 0 rgba(212,255,58,.4)}
+.btn-acid:hover{transform:translateY(-2px);box-shadow:0 10px 40px -8px rgba(212,255,58,.55)}
+.btn-ghost{background:transparent;color:var(--paper);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--paper)}
+.btn-sm{padding:9px 18px;font-size:14px}
+
+/* HERO */
+.hero{position:relative;padding:72px 0 96px;overflow:hidden}
+.hero::after{content:"";position:absolute;width:720px;height:720px;right:-200px;top:-180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(212,255,58,.16),transparent 62%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:56px;align-items:center;position:relative;z-index:1}
+.rec{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:999px;padding:7px 14px;margin-bottom:28px}
+.rec i{width:8px;height:8px;border-radius:50%;background:var(--hot);animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.2}}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(40px,6.4vw,84px);line-height:.98;letter-spacing:-.045em}
+h1 em{font-style:normal;color:var(--acid);display:inline-block}
+h1 .strike{position:relative;color:var(--muted)}
+h1 .strike::after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:.09em;background:var(--hot);transform:scaleX(0);transform-origin:left;animation:strike .7s 1s forwards cubic-bezier(.7,0,.2,1)}
+@keyframes strike{to{transform:scaleX(1)}}
+.lede{font-size:clamp(17px,1.6vw,20px);color:#cfccc2;max-width:560px;margin:28px 0 36px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.proof{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap}
+.proof b{display:block;font-family:var(--display);font-size:28px;letter-spacing:-.03em}
+.proof span{font-size:14px;color:var(--muted)}
+
+/* PHONE */
+.phone-col{display:flex;justify-content:center;position:relative}
+.phone{position:relative;width:min(300px,78vw);aspect-ratio:9/19;border-radius:42px;background:#000;padding:10px;
+  box-shadow:0 0 0 1px #34382d,0 40px 100px -30px rgba(0,0,0,.9),0 0 80px -20px rgba(212,255,58,.25);transform:rotate(3deg)}
+.screen{position:relative;width:100%;height:100%;border-radius:33px;overflow:hidden;background:linear-gradient(180deg,#5a6b5d,#2b3329)}
+.scene{position:absolute;inset:0;transition:filter .3s}
+.person{position:absolute;left:50%;bottom:0;width:86%;transform:translateX(-50%);transform-origin:50% 30%;transition:transform .25s cubic-bezier(.2,1.6,.4,1)}
+.bars::before,.bars::after{content:"";position:absolute;left:0;right:0;height:0;background:#000;z-index:3;transition:height .5s cubic-bezier(.7,0,.2,1)}
+.bars::before{top:0}.bars::after{bottom:0}
+.bigword{position:absolute;left:0;right:0;top:20%;text-align:center;font-family:var(--display);font-weight:900;font-size:56px;color:#ffe03a;letter-spacing:-.04em;z-index:4;opacity:0;transform:scale(1.6);text-shadow:0 6px 0 rgba(0,0,0,.35)}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:5;pointer-events:none}
+.wipe{position:absolute;inset:0;z-index:2;clip-path:inset(0 0 0 100%);background:linear-gradient(180deg,#c9884f,#7a4a2a);mix-blend-mode:color;transition:clip-path 1.6s cubic-bezier(.6,0,.2,1)}
+.wipe-line{position:absolute;top:0;bottom:0;width:2px;background:#fff;left:100%;z-index:4;opacity:0;transition:left 1.6s cubic-bezier(.6,0,.2,1)}
+.wipe-line::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;background:#fff;transform:translate(-50%,-50%)}
+.prompt-bar{position:absolute;left:12px;right:12px;top:44px;z-index:4;background:rgba(242,239,230,.95);color:#111;border-radius:16px;padding:10px 12px;font-family:var(--mono);font-size:11px;opacity:0;transform:translateY(-12px);transition:.4s}
+.prompt-bar small{display:block;font-size:9px;letter-spacing:.12em;color:#6b6b60;margin-bottom:3px}
+.prompt-bar .caret{display:inline-block;width:6px;height:12px;background:#111;vertical-align:-2px;animation:blink 1s infinite}
+.hud{position:absolute;left:14px;right:14px;bottom:16px;display:flex;justify-content:space-between;z-index:6;font-family:var(--mono);font-size:10px;color:#fff;text-shadow:0 1px 2px #000}
+.hud .dot{color:var(--hot)}
+.effect-tag{position:absolute;left:-30px;bottom:70px;z-index:7;background:var(--acid);color:var(--acid-ink);font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 14px;border-radius:999px;transform:rotate(-4deg);box-shadow:0 10px 30px -10px rgba(0,0,0,.7)}
+/* scene states */
+.s-punch .scene{filter:grayscale(1) contrast(1.4)}
+.s-punch .bigword{animation:word 1s ease-out}
+.s-cinema .bars::before,.s-cinema .bars::after{height:13%}
+.s-cinema .person{transform:translateX(-50%) scale(1.08)}
+.s-cinema .scene{filter:sepia(.25) saturate(1.3) contrast(1.1)}
+.s-wipe .wipe{clip-path:inset(0 0 0 0)}
+.s-wipe .wipe-line{left:-2px;opacity:1}
+.s-prompt .prompt-bar{opacity:1;transform:none}
+@keyframes word{0%{opacity:0;transform:scale(1.8)}15%{opacity:1;transform:scale(1)}85%{opacity:1}100%{opacity:1}}
+
+/* MARQUEE */
+.marquee{border-block:1px solid var(--line);background:var(--ink-2);overflow:hidden;padding:18px 0}
+.track{display:flex;gap:48px;width:max-content;animation:scroll 48s linear infinite}
+.track span{font-family:var(--display);font-weight:700;font-size:22px;white-space:nowrap;letter-spacing:-.02em;color:#56594d}
+.track span:nth-child(3n){color:var(--paper)}
+.track span::before{content:"✦";color:var(--acid);margin-right:48px;font-size:14px;vertical-align:4px}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+section{padding:112px 0}
+.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px;color:var(--muted)}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--acid)}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(30px,4.2vw,54px);line-height:1.04;letter-spacing:-.04em;max-width:820px}
+h2 em{font-style:normal;color:var(--acid)}
+.sub{color:#bdbab0;max-width:620px;margin-top:20px;font-size:18px}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.step{background:var(--ink);padding:36px 30px 40px;position:relative}
+.step .n{font-family:var(--mono);font-size:13px;color:var(--acid)}
+.step h3{font-family:var(--display);font-size:24px;letter-spacing:-.03em;margin:46px 0 10px}
+.step p{color:var(--muted);font-size:16px}
+.step code{font-family:var(--mono);font-size:13px;background:var(--ink-3);padding:2px 7px;border-radius:6px;color:var(--paper)}
+
+/* PROMPTS */
+.prompts{display:grid;gap:18px;margin-top:56px}
+.prompt{display:grid;grid-template-columns:220px 1fr;gap:32px;padding:30px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--ink-2),var(--ink));transition:border-color .25s}
+.prompt:hover{border-color:#4a503f}
+.prompt .idx{font-family:var(--display);font-weight:900;font-size:56px;line-height:1;color:transparent;-webkit-text-stroke:1px #4a503f}
+.prompt h3{font-family:var(--display);font-size:22px;letter-spacing:-.03em;margin-top:14px}
+.prompt .use{color:var(--muted);font-size:15px;margin-top:6px}
+.code{position:relative;background:#080907;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.code-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--muted)}
+.code-head .dots{display:flex;gap:6px}.code-head .dots i{width:9px;height:9px;border-radius:50%;background:#2e3229}
+.copy{font-family:var(--mono);font-size:12px;background:var(--ink-3);color:var(--paper);border:1px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer;transition:.2s}
+.copy:hover{border-color:var(--acid);color:var(--acid)}
+.copy.ok{background:var(--acid);color:var(--acid-ink);border-color:var(--acid)}
+.code pre{font-family:var(--mono);font-size:14px;line-height:1.7;padding:18px 20px;white-space:pre-wrap;color:#dcd9cf}
+.code pre .k{color:var(--acid)}
+.tip{margin-top:28px;display:flex;gap:14px;align-items:flex-start;padding:20px 24px;border-left:3px solid var(--acid);background:var(--ink-2);border-radius:0 12px 12px 0;color:#cfccc2}
+
+/* CATALOG */
+.catalog{background:var(--paper);color:var(--ink);border-radius:36px 36px 0 0;margin-top:-1px}
+.catalog .eyebrow{color:#6b6b60}
+.catalog .eyebrow::before{background:var(--ink)}
+.catalog h2 em{color:var(--ink);background:var(--acid);padding:0 .15em;border-radius:6px}
+.catalog .sub{color:#4a4a42}
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:44px 0 30px}
+.tab{font-family:var(--body);font-weight:600;font-size:15px;padding:10px 18px;border-radius:999px;border:1px solid #cfcabd;background:transparent;color:var(--ink);cursor:pointer;transition:.2s}
+.tab:hover{border-color:var(--ink)}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tab sup{font-family:var(--mono);font-size:10px;margin-left:4px;opacity:.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fx{background:#fff;border:1px solid #e1ddd1;border-radius:16px;padding:22px 22px 24px;transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.fx:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(0,0,0,.35)}
+.fx .cat{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a877b}
+.fx h4{font-family:var(--display);font-size:18px;letter-spacing:-.03em;margin:10px 0 6px}
+.fx p{font-size:14.5px;color:#55534a;line-height:1.5}
+.fx .badge{position:absolute;top:18px;right:18px;font-family:var(--mono);font-size:10px;background:var(--ink);color:var(--acid);padding:3px 8px;border-radius:999px}
+.fx.hide{display:none}
+
+/* WHY */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.checks{list-style:none;display:grid;gap:14px;margin-top:8px}
+.checks li{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--ink-2)}
+.checks li b{display:block;font-family:var(--display);font-size:17px;letter-spacing:-.02em;margin-bottom:4px}
+.checks li span{color:var(--muted);font-size:15px}
+.checks .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--ink-3);color:var(--acid);font-family:var(--mono);font-weight:600}
+
+/* OFFER */
+.offer{position:relative;border-radius:32px;padding:64px;background:var(--acid);color:var(--acid-ink);overflow:hidden;display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
+.offer::before{content:"35";position:absolute;right:-30px;bottom:-110px;font-family:var(--display);font-weight:900;font-size:360px;line-height:1;color:rgba(26,34,0,.07);letter-spacing:-.06em}
+.offer h2{color:var(--acid-ink)}
+.offer ul{list-style:none;margin-top:26px;display:grid;gap:10px}
+.offer ul li::before{content:"→ ";font-family:var(--mono)}
+.price-card{position:relative;z-index:1;background:var(--ink);color:var(--paper);border-radius:24px;padding:34px}
+.price-card .old{color:var(--muted);text-decoration:line-through;font-size:15px}
+.price-card .price{font-family:var(--display);font-weight:900;font-size:58px;letter-spacing:-.05em;line-height:1.05;margin:4px 0}
+.price-card .price small{font-size:20px;vertical-align:28px;margin-right:4px}
+.price-card .inst{color:var(--muted);font-size:15px;margin-bottom:24px}
+.price-card .btn{width:100%;justify-content:center}
+.guarantee{display:flex;gap:10px;align-items:center;margin-top:18px;font-size:14px;color:var(--muted)}
+
+/* FAQ */
+.faq{max-width:820px;margin-top:48px}
+details{border-bottom:1px solid var(--line);padding:24px 0}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;font-family:var(--display);font-size:19px;letter-spacing:-.02em}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--mono);color:var(--acid);font-size:22px;transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--muted);margin-top:12px;max-width:680px}
+
+/* FINAL + FOOTER */
+.final{text-align:center;padding:120px 0}
+.final h2{margin:0 auto}
+.final .hero-cta{justify-content:center;margin-top:36px}
+footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.float-wa{position:fixed;right:20px;bottom:20px;z-index:60;width:56px;height:56px;border-radius:50%;background:#25d366;display:grid;place-items:center;box-shadow:0 10px 30px -8px rgba(0,0,0,.6);transition:transform .2s}
+.float-wa:hover{transform:scale(1.08)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:900px){
+  .nav-links a:not(.btn){display:none}
+  .hero{padding:48px 0 72px}
+  .hero-grid,.why-grid,.offer{grid-template-columns:1fr}
+  .phone{transform:none}
+  .effect-tag{left:0}
+  .steps{grid-template-columns:1fr}
+  .prompt{grid-template-columns:1fr;gap:18px;padding:22px}
+  .prompt .idx{font-size:40px}
+  .offer{padding:36px 24px;border-radius:24px}
+  section{padding:80px 0}
+}
+@media (max-width:520px){
+  .wrap{padding:0 16px}
+  .proof{gap:20px}
+  .btn{padding:13px 22px}
+  .catalog{border-radius:24px 24px 0 0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#" class="logo">studio<span>Sal</span></a>
+    <div class="nav-links">
+      <a href="#prompts">Prompts</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#metodo">Método</a>
+      <a href="#oferta" class="btn btn-acid btn-sm">Quero o kit</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="rec mono"><i></i>REC · 00:00:35:00 · claude code + vídeo</div>
+      <h1>35 efeitos de Reel.<br><span class="strike">Zero</span> After Effects.<br><em>Uma frase cada.</em></h1>
+      <p class="lede">Você descreve o efeito em português. O Claude Code escreve o código do vídeo, renderiza um rascunho e te mostra. Não gostou? Fala o que mudar, do seu jeito.</p>
+      <div class="hero-cta">
+        <a href="#prompts" class="btn btn-acid">Copiar os 5 primeiros prompts ↓</a>
+        <a href="#catalogo" class="btn btn-ghost">Ver os 35 efeitos</a>
+      </div>
+      <div class="proof">
+        <div><b>35</b><span>efeitos testados</span></div>
+        <div><b>5</b><span>famílias de efeito</span></div>
+        <div><b>~2 min</b><span>por rascunho</span></div>
+      </div>
+    </div>
+    <div class="phone-col">
+      <div class="phone" id="phone" aria-hidden="true">
+        <div class="screen bars">
+          <div class="scene">
+            <svg class="person" viewBox="0 0 200 260"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e7b996"/><stop offset="1" stop-color="#c48f6c"/></linearGradient></defs>
+              <path d="M10 260 C14 196 52 176 100 176 C148 176 186 196 190 260Z" fill="#1d2420"/>
+              <rect x="84" y="140" width="32" height="44" rx="12" fill="#c48f6c"/>
+              <ellipse cx="100" cy="100" rx="44" ry="54" fill="url(#sk)"/>
+              <path d="M56 92 C54 50 80 38 102 40 C130 40 148 58 144 94 C138 70 120 64 100 66 C80 66 62 72 56 92Z" fill="#2a1d17"/>
+            </svg>
+          </div>
+          <div class="wipe"></div><div class="wipe-line"></div>
+          <div class="prompt-bar"><small>PROMPT</small><span id="typed"></span><span class="caret"></span></div>
+          <div class="bigword" id="bigword">PARA</div>
+          <div class="flash" id="flash"></div>
+          <div class="hud"><span><span class="dot">●</span> 1080×1920</span><span id="tc">00:00:00</span></div>
+        </div>
+        <div class="effect-tag" id="fxname">soco p&amp;b</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="track"></div></div>
+
+<section id="metodo">
+  <div class="wrap">
+    <div class="eyebrow mono rv">Como funciona</div>
+    <h2 class="rv">Três passos. O resto é <em>conversa</em>.</h2>
+    <div class="steps rv">
+      <div class="step"><span class="n">01 / grave</span><h3>Grave na vertical</h3><p>Fale para a câmera como sempre. Salve como <code>video.mp4</code> numa pasta vazia.</p></div>
+      <div class="step"><span class="n">02 / descreva</span><h3>Descreva o efeito</h3><p>Abra o Claude Code na pasta e cole um prompt. Troque os segundos e as palavras pelos seus.</p></div>
+      <div class="step"><span class="n">03 / revise</span><h3>Revise o rascunho</h3><p>Peça <code>renderiza um rascunho</code>. Ajuste falando — "mais rápido", "outra cor", "sobe o texto".</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="prompts" style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow mono rv">Comece aqui</div>
+    <h2 class="rv">O prompt zero, e mais <em>5 para copiar hoje</em>.</h2>
+    <p class="sub rv">Primeiro você cria o projeto. Depois, cada prompt vira um efeito num trecho do seu vídeo.</p>
+
+    <div class="prompts" id="promptList"></div>
+
+    <div class="tip rv"><span class="tc mono">dica</span><span>Depois de cada efeito, peça um rascunho antes de seguir. É muito mais barato corrigir um quadro do que um vídeo inteiro.</span></div>
+  </div>
+</section>
+
+<section class="catalog" id="catalogo">
+  <div class="wrap">
+    <div class="eyebrow mono rv">Catálogo completo</div>
+    <h2 class="rv">Os 35 efeitos que <em>param o dedo</em> no feed.</h2>
+    <p class="sub rv">Organizados em cinco famílias. Os marcados com <b>recorte</b> pedem você separado do fundo, quadro a quadro — é onde quem tenta sozinho costuma travar.</p>
+    <div class="tabs" id="tabs" role="toolbar" aria-label="Filtrar por família"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap why-grid">
+    <div>
+      <div class="eyebrow mono rv">O que o prompt não resolve</div>
+      <h2 class="rv">Um prompt dá um efeito. Um Reel bom pede <em>direção</em>.</h2>
+      <p class="sub rv">Efeito solto vira vitrine. O que segura a pessoa até o fim é saber onde cada coisa entra — e conferir antes de renderizar.</p>
+    </div>
+    <ul class="checks rv">
+      <li><span class="ic">01</span><div><b>Ritmo antes de enfeite</b><span>Pausas e repetições cortadas primeiro. Efeito nenhum salva um vídeo arrastado.</span></div></li>
+      <li><span class="ic">02</span><div><b>Ancorado na fala</b><span>Cada efeito nasce de uma palavra da transcrição, não de um segundo chutado.</span></div></li>
+      <li><span class="ic">03</span><div><b>Um efeito forte por ideia</b><span>Gancho, prova e chamada final — cada um com o seu momento de destaque.</span></div></li>
+      <li><span class="ic">04</span><div><b>Revisão com evidência</b><span>Frames-chave, junções de áudio e áreas seguras conferidos antes do render final.</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<section id="oferta" style="padding-top:0">
+  <div class="wrap">
+    <div class="offer rv">
+      <div style="position:relative;z-index:1">
+        <div class="mono" style="opacity:.7;margin-bottom:16px">o kit completo</div>
+        <h2>Grave, solte na pasta e diga “edita esse”.</h2>
+        <ul>
+          <li>Catálogo dos 35 efeitos com o método de cada um</li>
+          <li>Mais de 20 estilos de edição prontos</li>
+          <li>Recorte, legendas e verificação já configurados</li>
+          <li>Funciona no Claude Code — sem saber programar</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="old">de R$ 297</div>
+        <div class="price"><small>R$</small>97</div>
+        <div class="inst">pagamento único · ou 12x no cartão</div>
+        <a href="#" class="btn btn-acid">Garantir meu acesso →</a>
+        <div class="guarantee"><span class="tc">✓</span> 7 dias de garantia incondicional</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow mono rv">Perguntas</div>
+    <h2 class="rv">Antes de você perguntar.</h2>
+    <div class="faq rv">
+      <details><summary>Preciso saber programar?</summary><p>Não. Você escreve em português o que quer ver. O Claude Code cuida do código, da renderização e dos ajustes.</p></details>
+      <details><summary>Funciona com vídeo gravado no celular?</summary><p>Sim. Foi pensado para vídeo vertical 1080×1920, do jeito que sai da câmera do celular.</p></details>
+      <details><summary>Quanto tempo leva um Reel completo?</summary><p>Um efeito isolado sai em poucos minutos. Um Reel inteiro, com cortes, legendas e 3 a 5 efeitos, costuma levar menos de uma hora — e fica mais rápido a cada vídeo.</p></details>
+      <details><summary>E se eu não gostar?</summary><p>Você tem 7 dias para pedir o reembolso, sem precisar explicar o motivo.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 class="rv">Seu próximo Reel pode ter <em>cara de produtora</em>.</h2>
+    <div class="hero-cta rv">
+      <a href="#oferta" class="btn btn-acid">Quero o kit completo</a>
+      <a href="#prompts" class="btn btn-ghost">Testar os prompts grátis</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><span>© 2026 studioSal</span><span>Feito com Claude Code + HyperFrames</span></div>
+</footer>
+
+<a href="#" class="float-wa" aria-label="Falar no WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7-2.8-1.1-4.6-4-4.8-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 .9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+</a>
+
+<script>
+const PROMPTS = [
+  {t:"Prompt zero", use:"Monta a base. Uma vez por vídeo.", file:"00-projeto",
+   p:`Monta um projeto vertical 1080x1920 a 30 fps com o meu video.mp4 como trilha principal, sem cortar nada ainda. Transcreve a fala com tempo por palavra e gera um frame em 00:02 para eu conferir se o rosto está bem enquadrado.`},
+  {t:"Soco P&B", use:"Gancho. Primeira frase do vídeo.", file:"01-soco-pb",
+   p:`Na minha primeira frase, tira toda a cor e sobe o contraste. Sincroniza três punch-ins com as sílabas mais fortes da frase (1,15x, 1,3x e 1,5x), cada um com um shake de 4 quadros. A cada punch, a palavra dita surge em caixa-alta amarela no terço superior. Na frase seguinte, a cor volta de uma vez.`},
+  {t:"Faixas de cinema", use:"A frase que você quer que fique.", file:"02-faixas-cinema",
+   p:`Acha na transcrição a frase "[SUA FRASE]". Enquanto ela dura, desliza um letterbox 2.39:1 de fora para dentro, faz um push-in lento de 4%, aplica um grade teal e laranja suave e grão fino. As faixas recolhem meio segundo depois da última palavra.`},
+  {t:"Barra de prompt", use:"Quando você fala \"é só pedir\".", file:"03-barra-prompt",
+   p:`Quando eu disser "é só pedir", um campo de texto no estilo de app desliza do topo. Digita "[SEU PEDIDO]" em ritmo humano, com uma pausa curta no meio. A seta de enviar fica verde, um spinner gira por 1 segundo e dá lugar a "pronto ✓". Tudo some quando eu mudo de assunto.`},
+  {t:"Checklist animado", use:"Quando você lista passos.", file:"04-checklist",
+   p:`No trecho em que eu enumero os passos, põe um card lateral à esquerda com os itens tirados da minha própria fala. Cada item ganha um check no instante em que eu o nomeio, e um contador "1/3 · 2/3 · 3/3" atualiza no canto do card. O card sai deslizando para a esquerda no fim.`},
+  {t:"Divisor antes/depois", use:"Mostrar transformação.", file:"05-antes-depois",
+   p:`Divide a tela na vertical: à esquerda o vídeo cru, à direita com correção de cor e nitidez. O divisor nasce no centro, balança uma vez e então varre para a esquerda, revelando só a versão final. Etiquetas pequenas CRU e FINAL acompanham o divisor.`},
+];
+const FX = {
+  "Você no cenário":[
+    ["Editorial","Layout de revista com o seu nome em display atrás do ombro.",1],
+    ["Nome por Trás","O título se monta no fundo e a sua silhueta fica na frente.",1],
+    ["Moldura Quebrada","Um card de post enquadra você até o braço atravessar a borda.",1],
+    ["Anel de Conteúdo","Miniaturas em elipse, alternando entre frente e trás de você.",1],
+    ["Dados no Fundo","Um gráfico cresce na parede no instante em que você cita o número.",1],
+    ["Vertigo","Perspectiva do fundo comprime enquanto o seu tamanho se mantém.",1],
+    ["Quadro de Cortiça","Recortes e fotos se fixam com alfinete atrás da sua cabeça.",1]],
+  "Texto em movimento":[
+    ["Gravidade","Caracteres caem com física e se acomodam formando a frase.",0],
+    ["Palavra Soco","Uma palavra gigante por batida de fala, com punch-in.",0],
+    ["Karaokê","Cada palavra acende no exato quadro em que é falada.",0],
+    ["Marca-texto","Um traço amarelo varre o termo-chave da legenda.",0],
+    ["Créditos de Abertura","Tipografia serifada com fade lento, como abertura de série.",0],
+    ["Nota à Mão","Uma anotação rabiscada com seta apontando para algo na cena.",0],
+    ["Odômetro","O número gira dígito a dígito até o valor final.",0]],
+  "Interface real":[
+    ["Scroll Infinito","Uma tela de rede social rola rápido e freia no seu vídeo.",0],
+    ["Pergunta & Resposta","Uma dúvida de seguidor aparece e sua resposta é digitada.",0],
+    ["Chat Dividido","Metade de cima vira conversa enquanto você comenta embaixo.",0],
+    ["Smartphone 3D","Um aparelho flutua girando e troca de tela a cada frase.",0],
+    ["Barra de Prompt","O pedido é digitado, enviado e confirmado na sua frente.",0],
+    ["Checklist","Itens ticados no instante em que você os nomeia.",0],
+    ["Bastidor","A timeline de edição aparece montando o próprio vídeo.",0]],
+  "Câmera e cor":[
+    ["Soco P&B","Dessaturação total com punch-ins nas sílabas fortes.",0],
+    ["Faixas de Cinema","Letterbox 2.39, grade quente e grão na frase-chave.",0],
+    ["Cru × Final","Divisor vertical revela a versão tratada.",0],
+    ["Túnel","A câmera mergulha num detalhe e emerge na próxima cena.",0],
+    ["Flash de Virada","Dois quadros de branco marcam a mudança de assunto.",0],
+    ["Película","Textura analógica e leve vinheta sobre o vídeo todo.",0],
+    ["Paleta Extraída","As cores dominantes do quadro viram swatches animados.",0]],
+  "Seus próprios vídeos":[
+    ["Baralho","Suas capas deslizam e se empilham sobre a mesa.",0],
+    ["Grade Viva","Vários dos seus vídeos tocam em mosaico ao seu redor.",1],
+    ["Muro de Thumbs","Dezenas de miniaturas cobrem a tela num instante.",0],
+    ["Película Horizontal","Seus cortes passam como fotogramas numa tira.",0],
+    ["Roda 3D","Reels giram num carrossel em perspectiva.",0],
+    ["Capa Viva","Uma miniatura estática ganha movimento e cresce até a tela cheia.",0],
+    ["Perfil em Zoom","O grid do seu perfil aparece e mergulha num vídeo.",0]],
+};
+
+// prompts
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"([^"]+)"/g,'<span class="k">"$1"</span>');
+document.getElementById("promptList").innerHTML = PROMPTS.map((x,i)=>`
+  <article class="prompt rv">
+    <div><div class="idx">${String(i).padStart(2,"0")}</div><h3>${x.t.replace("&","&amp;")}</h3><p class="use">${x.use}</p></div>
+    <div class="code"><div class="code-head"><span class="dots"><i></i><i></i><i></i></span><span class="mono">${x.file}.txt</span><button class="copy" data-i="${i}">copiar</button></div>
+    <pre>${esc(x.p)}</pre></div>
+  </article>`).join("");
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".copy"); if(!b) return;
+  const done=()=>{b.textContent="copiado ✓";b.classList.add("ok");setTimeout(()=>{b.textContent="copiar";b.classList.remove("ok")},1800)};
+  const txt=PROMPTS[b.dataset.i].p;
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(done).catch(()=>{
+    const t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();
+    try{document.execCommand("copy");done()}catch(_){} t.remove();});
+});
+
+// catalog
+const cats=Object.keys(FX), tabs=document.getElementById("tabs"), grid=document.getElementById("grid");
+tabs.innerHTML=[["Todos",35],...cats.map(c=>[c,FX[c].length])].map(([c,n],i)=>`<button class="tab" aria-pressed="${i==0}" data-c="${c}">${c}<sup>${n}</sup></button>`).join("");
+grid.innerHTML=cats.flatMap(c=>FX[c].map(([n,d,r])=>`<div class="fx" data-c="${c}">${r?'<span class="badge">recorte</span>':""}<div class="cat">${c}</div><h4>${n}</h4><p>${d}</p></div>`)).join("");
+tabs.addEventListener("click",e=>{const b=e.target.closest(".tab");if(!b)return;
+  tabs.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-pressed",t===b));
+  grid.querySelectorAll(".fx").forEach(f=>f.classList.toggle("hide",b.dataset.c!=="Todos"&&f.dataset.c!==b.dataset.c));});
+
+// marquee
+const names=cats.flatMap(c=>FX[c].map(x=>x[0]));
+document.getElementById("track").innerHTML=[...names,...names].map(n=>`<span>${n}</span>`).join("");
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.12});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+
+// phone demo
+const phone=document.getElementById("phone"), person=phone.querySelector(".person"), word=document.getElementById("bigword"),
+      flash=document.getElementById("flash"), tag=document.getElementById("fxname"), typed=document.getElementById("typed"), tc=document.getElementById("tc");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const STATES=[["s-punch","soco p&b"],["s-cinema","faixas de cinema"],["s-prompt","barra de prompt"],["s-wipe","cru × final"]];
+let si=0, t0=performance.now(), timers=[];
+function pulse(scale,w){word.textContent=w;word.style.animation="none";void word.offsetWidth;word.style.animation="";
+  person.style.transform=`translateX(-50%) scale(${scale})`;flash.style.transition="none";flash.style.opacity=.9;
+  requestAnimationFrame(()=>{flash.style.transition="opacity .18s";flash.style.opacity=0});}
+function run(){
+  timers.forEach(clearTimeout);timers=[];
+  STATES.forEach(s=>phone.classList.remove(s[0])); person.style.transform="";typed.textContent="";
+  const [cls,label]=STATES[si]; tag.textContent=label;
+  requestAnimationFrame(()=>phone.classList.add(cls));
+  if(cls==="s-punch"){timers.push(setTimeout(()=>pulse(1.25,"ESPERA"),300),setTimeout(()=>pulse(1.55,"OLHA"),1500));}
+  if(cls==="s-prompt"){const s="deixa meu vídeo profissional";[...s].forEach((ch,i)=>timers.push(setTimeout(()=>typed.textContent+=ch,500+i*55)));}
+  si=(si+1)%STATES.length;
+}
+if(!reduce){run();setInterval(run,3400);}
+else phone.classList.add("s-cinema");
+(function tick(){const s=(performance.now()-t0)/1000;tc.textContent=[Math.floor(s/60),Math.floor(s%60),Math.floor((s%1)*30)].map(v=>String(v).padStart(2,"0")).join(":");if(!reduce)requestAnimationFrame(tick)})();
+</script>
+</body>
+</html>
